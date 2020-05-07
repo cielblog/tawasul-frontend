@@ -1,0 +1,126 @@
+@import '~antd/es/style/themes/default.less';
+@import (css) url(https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700&display=swap);
+
+[dir='rtl'] {
+  body {
+    font-family: 'Cairo', @font-family;
+  }
+}
+html,
+body,
+#root {
+  height: 100%;
+}
+
+.colorWeak {
+  filter: invert(80%);
+}
+
+.ant-layout {
+  min-height: 100vh;
+}
+
+:global(.ant-layout-header), :global(.ant-layout-sider), .ant-pro-basicLayout .ant-layout-header:not(.ant-pro-top-menu) {
+  background-color: #0384bc !important;
+  background-image: url(https://static.affinitweet.com/images/overlay.png), linear-gradient(120deg, #0384bc 0%, #b5ac84 100%) !important;
+
+  .ant-menu.ant-menu-dark, .ant-menu-dark .ant-menu-sub {
+    background: transparent;
+  }
+}
+:global(.ant-pro-sider-menu-logo) {
+  background: transparent !important;
+}
+
+.ant-menu-dark .ant-menu-inline.ant-menu-sub {
+  background: transparent !important;
+}
+canvas {
+  display: block;
+}
+
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+@media (max-width: @screen-xs) {
+  .ant-table {
+    width: 100%;
+    overflow-x: auto;
+
+    &-thead > tr,
+    &-tbody > tr {
+      > th,
+      > td {
+        white-space: pre;
+
+        > span {
+          display: block;
+        }
+      }
+    }
+  }
+}
+
+// 兼容IE11
+@media screen and(-ms-high-contrast: active), (-ms-high-contrast: none) {
+  body .ant-design-pro > .ant-layout {
+    min-height: 100vh;
+  }
+}
+
+.pull-left {
+  float: left;
+}
+
+.pull-right {
+  float: right;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+[dir="rtl"] {
+  .pull-left {
+    float: right;
+  }
+
+  .pull-right {
+    float: left;
+  }
+
+  .text-left {
+    text-align: right;
+  }
+
+  .text-right {
+    text-align: left;
+  }
+
+  // ANTD
+  .ant-tabs-nav .ant-tabs-tab:last-child {
+    margin: 0;
+  }
+
+  .ant-btn > .ant-btn-loading-icon .anticon {
+    padding-right: 0;
+    padding-left: 8px;
+  }
+
+  .ant-page-header-heading-title {
+    margin-right: unset;
+    margin-left: 12px;
+  }
+}
