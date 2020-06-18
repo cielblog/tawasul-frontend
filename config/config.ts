@@ -78,25 +78,12 @@ export default defineConfig({
               name: 'dashboard',
               title: 'menu.dashboard',
               icon: 'dashboard',
-              authority: ['ROLE_SEND_SMS'],
               routes: [
                 {
                   name: 'analysis',
                   icon: 'StockOutlined',
                   path: '/dashboard/analysis',
                   component: './dashboard/analysis',
-                },
-                {
-                  name: 'monitor',
-                  icon: 'smile',
-                  path: '/dashboard/monitor',
-                  component: './dashboard/monitor',
-                },
-                {
-                  name: 'workplace',
-                  icon: 'smile',
-                  path: '/dashboard/workplace',
-                  component: './dashboard/workplace',
                 },
               ],
             },
@@ -107,6 +94,7 @@ export default defineConfig({
               routes: [
                 {
                   name: 'list',
+                  icon: 'table',
                   path: '/messages/list',
                   component: './form/basic-form',
                 },
@@ -119,38 +107,14 @@ export default defineConfig({
               ],
             },
             {
-              path: '/list',
+              path: '/groups',
               icon: 'table',
-              name: 'list',
+              name: 'groups',
               routes: [
                 {
-                  path: '/list/search',
-                  name: 'search-list',
+                  path: '/groups/list',
+                  name: 'list',
                   component: './list/search',
-                  routes: [
-                    {
-                      path: '/list/search',
-                      redirect: '/list/search/articles',
-                    },
-                    {
-                      name: 'articles',
-                      icon: 'smile',
-                      path: '/list/search/articles',
-                      component: './list/search/articles',
-                    },
-                    {
-                      name: 'projects',
-                      icon: 'smile',
-                      path: '/list/search/projects',
-                      component: './list/search/projects',
-                    },
-                    {
-                      name: 'applications',
-                      icon: 'smile',
-                      path: '/list/search/applications',
-                      component: './list/search/applications',
-                    },
-                  ],
                 },
                 {
                   name: 'table-list',
@@ -173,9 +137,9 @@ export default defineConfig({
               ],
             },
             {
-              path: '/profile',
-              name: 'profile',
-              icon: 'profile',
+              path: '/developers',
+              name: 'developers',
+              icon: 'AndroidOutlined',
               routes: [
                 {
                   name: 'basic',

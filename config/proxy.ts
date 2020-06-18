@@ -8,7 +8,7 @@
 export default {
   dev: {
     '/v1/': {
-      target: 'http://tawasul-backend.test',
+      target: 'http://localhost:8080',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
