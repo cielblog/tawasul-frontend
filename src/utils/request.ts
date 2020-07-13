@@ -2,8 +2,8 @@
  * request 网络请求工具
  * 更详细的 api 文档: https://github.com/umijs/umi-request
  */
-import d, {extend} from 'umi-request';
-import {notification} from 'antd';
+import { extend } from 'umi-request';
+import { notification } from 'antd';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -27,10 +27,10 @@ const codeMessage = {
  * 异常处理程序
  */
 const errorHandler = (error: { response: Response }): Response => {
-  const {response} = error;
+  const { response } = error;
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
-    const {status, url} = response;
+    const { status, url } = response;
     notification.error({
       message: `请求错误 ${status}: ${url}`,
       description: errorText,
@@ -52,24 +52,24 @@ const request = extend({
   credentials: 'include', // 默认请求是否带上cookie,
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'Authorization': `Bearer ${localStorage.getItem('auth-token')}`
-  }
+    Accept: 'application/json',
+    Authorization: `Bearer ${localStorage.getItem('auth-token')}`,
+  },
 });
 
 export const setLocale = (locale: string) => {
   request.extendOptions({
     headers: {
-      'Accept-Language': locale
-    }
-  })
-}
+      'Accept-Language': locale,
+    },
+  });
+};
 
 export const setToken = (token: string) => {
   request.extendOptions({
     headers: {
-      'Authorization': `Bearer ${token}`
-    }
-  })
-}
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
 export default request;
