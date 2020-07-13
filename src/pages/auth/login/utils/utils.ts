@@ -21,8 +21,7 @@ export function setAuthority(authority: string | string[]) {
 }
 
 export function saveAuthToken(token: string): string {
-  localStorage.setItem("auth-token", token);
+  localStorage.setItem('auth-token', token);
 
   return token;
 }
-

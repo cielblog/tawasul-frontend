@@ -3,10 +3,11 @@ import React, { useState, useCallback, useEffect } from 'react';
 
 import omit from 'omit.js';
 import { FormItemProps } from 'antd/es/form/FormItem';
-import ItemMap from './map';
+import { getFakeCaptcha } from '@/services/auth';
 import LoginContext, { LoginContextProps } from './LoginContext';
+
+import ItemMap from './map';
 import styles from './index.less';
-import { getFakeCaptcha } from '../../service';
 
 export type WrappedLoginItemProps = LoginItemProps;
 export type LoginItemKeyType = keyof typeof ItemMap;
@@ -31,7 +32,7 @@ export interface LoginItemProps extends Partial<FormItemProps> {
   customProps?: { [key: string]: unknown };
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   tabUtil?: LoginContextProps['tabUtil'];
-  disabled?: boolean
+  disabled?: boolean;
 }
 
 const FormItem = Form.Item;

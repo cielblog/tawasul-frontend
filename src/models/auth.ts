@@ -1,47 +1,46 @@
-import {Effect, Reducer, history} from 'umi';
-import {message} from 'antd';
-import {getFakeCaptcha, userLogin} from './service';
-import {getPageQuery, saveAuthToken} from './utils/utils';
-import {setToken} from "@/utils/request";
+import { Effect, Reducer, history } from 'umi';
+import { login } from '@/services/auth';
+import { getPageQuery, saveAuthToken } from '@/utils/utils';
+import { setToken } from '@/utils/request';
 
-export interface StateType {
+export interface AuthModelState {
   status?: 'ok' | 'error';
   error: string;
   currentAuthority?: 'user' | 'guest' | 'admin';
-  token: string;
+  token: string | null;
 }
 
-export interface ModelType {
+export interface AuthModelType {
   namespace: string;
-  state: StateType;
+  state: AuthModelState;
   effects: {
     login: Effect;
-    getCaptcha: Effect;
   };
   reducers: {
-    changeLoginStatus: Reducer<StateType>;
+    changeLoginStatus: Reducer<AuthModelState>;
+    changeErrorStatus: Reducer<AuthModelState>;
   };
 }
 
-const Model: ModelType = {
-  namespace: 'userLogin',
+const AuthModel: AuthModelType = {
+  namespace: 'auth',
 
   state: {
     status: undefined,
+    token: sessionStorage.getItem('auth-token') ? sessionStorage.getItem('auth-token') : null,
+    error: '',
   },
 
   effects: {
-    * login({payload}, {call, put}) {
+    *login({ payload }, { call, put }) {
       try {
-        const response = yield call(userLogin, payload.data);
-
-        message.success('تم تسجيل الدخول بنجاح!');
+        const response = yield call(login, payload.data);
 
         yield put({
           type: 'changeLoginStatus',
           payload: {
             token: response.token,
-            keepSession: payload.keepSession
+            keepSession: payload.keepSession,
           },
         });
 
@@ -52,7 +51,7 @@ const Model: ModelType = {
         // Login successfully
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
-        let {redirect} = params as { redirect: string };
+        let { redirect } = params as { redirect: string };
         if (redirect) {
           const redirectUrlParams = new URL(redirect);
           if (redirectUrlParams.origin === urlParams.origin) {
@@ -66,46 +65,42 @@ const Model: ModelType = {
           }
         }
         history.replace(redirect || '/');
-
       } catch (e) {
-
         if (e.response.status === 401) {
           yield put({
             type: 'changeErrorStatus',
-            payload: e.data.description,
+            payload: e.data.message,
           });
-
         }
       }
-    },
-
-    * getCaptcha({payload}, {call}) {
-      yield call(getFakeCaptcha, payload);
     },
   },
 
   reducers: {
-    changeLoginStatus(state, {payload}) {
+    changeLoginStatus(state, { payload }) {
       setToken(payload.token);
+      saveAuthToken(payload.token);
 
       if (payload.keepSession) {
-        saveAuthToken(payload.token)
+        saveAuthToken(payload.token);
       }
 
       return {
         ...state,
         status: 'ok',
         token: payload.token,
+        error: '',
       };
     },
-    changeErrorStatus(state, {payload}) {
+    changeErrorStatus(state, { payload }) {
       return {
         ...state,
         error: payload,
-        status: 'error'
-      }
+        status: 'error',
+        token: null,
+      };
     },
   },
 };
 
-export default Model;
+export default AuthModel;

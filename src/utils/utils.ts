@@ -63,3 +63,9 @@ export const getRouteAuthority = (path: string, routeData: Route[]) => {
   });
   return authorities;
 };
+
+export function saveAuthToken(token: string): string {
+  sessionStorage.setItem('auth-token', token);
+
+  return token;
+}
