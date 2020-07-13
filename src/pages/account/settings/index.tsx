@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 
-import { FormattedMessage, Dispatch, connect } from 'umi';
+import { connect, Dispatch, FormattedMessage } from 'umi';
+import MasterWrapper from '@/components/MasterWrapper';
 import { GridContent } from '@ant-design/pro-layout';
 import { Menu } from 'antd';
 import BaseView from './components/base';
 import BindingView from './components/binding';
 import { CurrentUser } from './data.d';
-import NotificationView from './components/notification';
 import SecurityView from './components/security';
 import styles from './style.less';
 
@@ -35,22 +35,11 @@ class Settings extends Component<SettingsProps, SettingsState> {
       base: (
         <FormattedMessage id="accountandsettings.menuMap.basic" defaultMessage="Basic Settings" />
       ),
-      security: (
-        <FormattedMessage
-          id="accountandsettings.menuMap.security"
-          defaultMessage="Security Settings"
-        />
-      ),
+      security: <FormattedMessage id="accountandsettings.menuMap.wallet" defaultMessage="Wallet" />,
       binding: (
         <FormattedMessage
-          id="accountandsettings.menuMap.binding"
-          defaultMessage="Account Binding"
-        />
-      ),
-      notification: (
-        <FormattedMessage
-          id="accountandsettings.menuMap.notification"
-          defaultMessage="New Message Notification"
+          id="accountandsettings.menuMap.personalization"
+          defaultMessage="Personalization"
         />
       ),
     };
@@ -121,13 +110,9 @@ class Settings extends Component<SettingsProps, SettingsState> {
         return <SecurityView />;
       case 'binding':
         return <BindingView />;
-      case 'notification':
-        return <NotificationView />;
       default:
-        break;
+        return <BaseView />;
     }
-
-    return null;
   };
 
   render() {
@@ -137,30 +122,32 @@ class Settings extends Component<SettingsProps, SettingsState> {
     }
     const { mode, selectKey } = this.state;
     return (
-      <GridContent>
-        <div
-          className={styles.main}
-          ref={(ref) => {
-            if (ref) {
-              this.main = ref;
-            }
-          }}
-        >
-          <div className={styles.leftMenu}>
-            <Menu
-              mode={mode}
-              selectedKeys={[selectKey]}
-              onClick={({ key }) => this.selectKey(key as SettingsStateKeys)}
-            >
-              {this.getMenu()}
-            </Menu>
+      <MasterWrapper>
+        <GridContent>
+          <div
+            className={styles.main}
+            ref={(ref) => {
+              if (ref) {
+                this.main = ref;
+              }
+            }}
+          >
+            <div className={styles.leftMenu}>
+              <Menu
+                mode={mode}
+                selectedKeys={[selectKey]}
+                onClick={({ key }) => this.selectKey(key as SettingsStateKeys)}
+              >
+                {this.getMenu()}
+              </Menu>
+            </div>
+            <div className={styles.right}>
+              <div className={styles.title}>{this.getRightTitle()}</div>
+              {this.renderChildren()}
+            </div>
           </div>
-          <div className={styles.right}>
-            <div className={styles.title}>{this.getRightTitle()}</div>
-            {this.renderChildren()}
-          </div>
-        </div>
-      </GridContent>
+        </GridContent>
+      </MasterWrapper>
     );
   }
 }

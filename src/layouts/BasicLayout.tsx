@@ -18,8 +18,8 @@ import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { ConnectState } from '@/models/connect';
 import { getAuthorityFromRouter } from '@/utils/utils';
-import logo from '../assets/smallLogo.svg';
-import MasterLayout from "@/layouts/MasterLayout";
+import MasterLayout from '@/layouts/MasterLayout';
+import logo from '../assets/smallLogo.png';
 
 const noMatch = (
   <Result

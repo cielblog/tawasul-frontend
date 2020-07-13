@@ -117,12 +117,6 @@ export default defineConfig({
               path: '/account',
               routes: [
                 {
-                  name: 'center',
-                  icon: 'smile',
-                  path: '/account/center',
-                  component: './account/center',
-                },
-                {
                   name: 'settings',
                   icon: 'smile',
                   path: '/account/settings',
@@ -133,7 +127,10 @@ export default defineConfig({
             {
               path: '/',
               redirect: '/dashboard/analysis',
-              authority: ['user'],
+            },
+            {
+              path: '/account',
+              redirect: '/account/settings',
             },
             {
               component: '404',

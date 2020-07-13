@@ -69,3 +69,8 @@ export function saveAuthToken(token: string): string {
 
   return token;
 }
+
+export function logout(): void {
+  sessionStorage.removeItem('auth-token');
+  localStorage.removeItem('roles');
+}

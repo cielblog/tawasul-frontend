@@ -1,15 +1,18 @@
-import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Menu, Spin } from 'antd';
 import { ClickParam } from 'antd/es/menu';
 import React from 'react';
-import { history, ConnectProps, connect } from 'umi';
+import { connect, ConnectProps, FormattedMessage, history } from 'umi';
 import { ConnectState } from '@/models/connect';
 import { CurrentUser } from '@/models/user';
+import { AuthModelState } from '@/models/auth';
+import { getLocale } from '@@/plugin-locale/localeExports';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 
 export interface GlobalHeaderRightProps extends Partial<ConnectProps> {
   currentUser?: CurrentUser;
+  auth: AuthModelState;
   menu?: boolean;
 }
 
@@ -22,7 +25,7 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
 
       if (dispatch) {
         dispatch({
-          type: 'login/logout',
+          type: 'auth/logout',
         });
       }
 
@@ -30,6 +33,38 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
     }
 
     history.push(`/account/${key}`);
+  };
+
+  getShortName = (name: string | null | undefined): string => {
+    const tempName: any = name;
+    if (!tempName) {
+      return 'N/A';
+    }
+
+    const names: string[] = tempName.split(' ');
+    if (names.length > 1) {
+      return `${names[0].charAt(0).toUpperCase()}${names[names.length - 1]
+        .charAt(0)
+        .toUpperCase()}`;
+    }
+
+    return tempName.charAt(0).toUpperCase();
+  };
+
+  getFullName = (name: any): string => {
+    const tempName = name;
+    if (!tempName) {
+      return 'N/A';
+    }
+
+    const names: string[] = tempName.split(' ');
+    if (names.length > 1) {
+      return `${names[0].charAt(0).toUpperCase()}${names[0].slice(1)} ${names[names.length - 1]
+        .charAt(0)
+        .toUpperCase()}${names[names.length - 1].slice(1)}`;
+    }
+
+    return `${tempName.charAt(0).toUpperCase()}${tempName.slice(1)}`;
   };
 
   render(): React.ReactNode {
@@ -45,30 +80,28 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
     const menuHeaderDropdown = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick} id="sadat">
         {menu && (
-          <Menu.Item key="center">
-            <UserOutlined />
-            个人中心
-          </Menu.Item>
-        )}
-        {menu && (
           <Menu.Item key="settings">
-            <SettingOutlined />
-            个人设置
+            <UserOutlined />
+            <FormattedMessage id="menu.account" />
           </Menu.Item>
         )}
         {menu && <Menu.Divider />}
 
         <Menu.Item key="logout">
           <LogoutOutlined />
-          退出登录
+          <FormattedMessage id="menu.account.logout" />
         </Menu.Item>
       </Menu>
     );
     return currentUser && currentUser.id ? (
       <HeaderDropdown overlay={menuHeaderDropdown}>
         <span className={`${styles.action} ${styles.account}`}>
-          <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar">AA</Avatar>
-          <span className={styles.name}>{currentUser.en_name}</span>
+          <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar">
+            {this.getShortName(currentUser.en_name)}
+          </Avatar>
+          <span className={styles.name}>
+            {this.getFullName(getLocale() === 'ar-EG' ? currentUser.ar_name : currentUser.en_name)}
+          </span>
         </span>
       </HeaderDropdown>
     ) : (
@@ -85,6 +118,7 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
   }
 }
 
-export default connect(({ user }: ConnectState) => ({
+export default connect(({ user, auth }: ConnectState) => ({
   currentUser: user.currentUser,
+  auth,
 }))(AvatarDropdown);

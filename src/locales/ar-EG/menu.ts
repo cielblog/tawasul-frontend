@@ -10,4 +10,6 @@ export default {
   'menu.dashboard': 'لوحة التحكم',
   'menu.dashboard.analysis': 'الاحصائيات',
   'menu.dashboard.users': 'المستخدمين',
+  'menu.account': 'الحساب',
+  'menu.account.logout': 'تسجيل الخروج',
 };

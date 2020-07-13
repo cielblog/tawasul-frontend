@@ -1,7 +1,8 @@
 import { Effect, Reducer, history } from 'umi';
 import { login } from '@/services/auth';
-import { getPageQuery, saveAuthToken } from '@/utils/utils';
+import { getPageQuery, logout, saveAuthToken } from '@/utils/utils';
 import { setToken } from '@/utils/request';
+import { stringify } from 'querystring';
 
 export interface AuthModelState {
   status?: 'ok' | 'error';
@@ -15,10 +16,12 @@ export interface AuthModelType {
   state: AuthModelState;
   effects: {
     login: Effect;
+    logout: Effect;
   };
   reducers: {
     changeLoginStatus: Reducer<AuthModelState>;
     changeErrorStatus: Reducer<AuthModelState>;
+    cleanAuthStates: Reducer<AuthModelState>;
   };
 }
 
@@ -74,6 +77,23 @@ const AuthModel: AuthModelType = {
         }
       }
     },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    *logout({ payload }, { put }) {
+      yield put({
+        type: 'cleanAuthStates',
+      });
+
+      const { redirect } = getPageQuery();
+      // Note: There may be security issues, please note
+      if (window.location.pathname !== '/auth/login' && !redirect) {
+        history.replace({
+          pathname: '/auth/login',
+          search: stringify({
+            redirect: window.location.href,
+          }),
+        });
+      }
+    },
   },
 
   reducers: {
@@ -98,6 +118,14 @@ const AuthModel: AuthModelType = {
         error: payload,
         status: 'error',
         token: null,
+      };
+    },
+    cleanAuthStates(state) {
+      logout();
+      return {
+        ...state,
+        token: '',
+        error: '',
       };
     },
   },
