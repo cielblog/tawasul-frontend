@@ -1,6 +1,5 @@
-import { connect, ConnectProps, getLocale } from 'umi';
+import { ConnectProps, getLocale } from 'umi';
 import React from 'react';
-import { ConnectState } from '@/models/connect';
 import { ConfigProvider } from 'antd';
 
 export interface MasterWrapperProps extends Partial<ConnectProps> {}
@@ -12,4 +11,4 @@ const MasterWrapper: React.FC<MasterWrapperProps> = (props) => {
   );
 };
 
-export default connect(({ settings }: ConnectState) => ({ ...settings }))(MasterWrapper);
+export default MasterWrapper;

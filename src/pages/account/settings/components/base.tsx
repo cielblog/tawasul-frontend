@@ -1,37 +1,37 @@
-import { UploadOutlined } from '@ant-design/icons';
-import { Button, Input, Select, Upload, Form, message } from 'antd';
+// import { UploadOutlined } from '@ant-design/icons';
+import { Button, Input, Select, Form, message } from 'antd';
 import { connect, FormattedMessage, formatMessage } from 'umi';
 import React, { Component } from 'react';
 
 import { CurrentUser } from '../data.d';
 import GeographicView from './GeographicView';
 import PhoneView from './PhoneView';
-import styles from './BaseView.less';
+// import styles from './BaseView.less';
 
 const { Option } = Select;
 
 // 头像组件 方便以后独立，增加裁剪之类的功能
-const AvatarView = ({ avatar }: { avatar: string }) => (
-  <>
-    <div className={styles.avatar_title}>
-      <FormattedMessage id="accountandsettings.basic.avatar" defaultMessage="Avatar" />
-    </div>
-    <div className={styles.avatar}>
-      <img src={avatar} alt="avatar" />
-    </div>
-    <Upload showUploadList={false}>
-      <div className={styles.button_view}>
-        <Button>
-          <UploadOutlined />
-          <FormattedMessage
-            id="accountandsettings.basic.change-avatar"
-            defaultMessage="Change avatar"
-          />
-        </Button>
-      </div>
-    </Upload>
-  </>
-);
+// const AvatarView = ({ avatar }: { avatar: string }) => (
+//   <>
+//     <div className={styles.avatar_title}>
+//       <FormattedMessage id="accountandsettings.basic.avatar" defaultMessage="Avatar" />
+//     </div>
+//     <div className={styles.avatar}>
+//       <img src={avatar} alt="avatar" />
+//     </div>
+//     <Upload showUploadList={false}>
+//       <div className={styles.button_view}>
+//         <Button>
+//           <UploadOutlined />
+//           <FormattedMessage
+//             id="accountandsettings.basic.change-avatar"
+//             defaultMessage="Change avatar"
+//           />
+//         </Button>
+//       </div>
+//     </Upload>
+//   </>
+// );
 interface SelectItem {
   label: string;
   key: string;
@@ -97,8 +97,8 @@ class BaseView extends Component<BaseViewProps> {
     const { currentUser } = this.props;
 
     return (
-      <div className={styles.baseView} ref={this.getViewDom}>
-        <div className={styles.left}>
+      <div ref={this.getViewDom}>
+        <div>
           <Form
             layout="vertical"
             onFinish={this.handleFinish}
@@ -207,9 +207,6 @@ class BaseView extends Component<BaseViewProps> {
               </Button>
             </Form.Item>
           </Form>
-        </div>
-        <div className={styles.right}>
-          <AvatarView avatar={this.getAvatarURL()} />
         </div>
       </div>
     );
