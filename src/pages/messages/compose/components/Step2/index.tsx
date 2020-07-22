@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Divider, Form } from 'antd';
 import { connect, Dispatch, FormattedMessage } from 'umi';
 import SmsField from '@/pages/messages/compose/components/SmsField';
+import EmailField from '@/pages/messages/compose/components/EmailField';
 import { UserModelState } from '@/models/user';
 import { FormInstance } from 'antd/lib/form';
 // Types
@@ -27,7 +28,7 @@ const MessageField: React.FC<MessageFieldProps> = (props) => {
     case 'sms':
       return <SmsField {...props} />;
     case 'email':
-      return <SmsField {...props} />;
+      return <EmailField {...props} />;
     case 'pn':
       return <SmsField {...props} />;
     default:

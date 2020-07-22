@@ -14,6 +14,7 @@ const { Step } = Steps;
 
 interface StepFormProps {
   current: StateType['current'];
+  data: StateType['step'];
 }
 
 const getCurrentStepAndComponent = (current?: string) => {
@@ -31,7 +32,7 @@ const getCurrentStepAndComponent = (current?: string) => {
   }
 };
 
-const ComposeMessage: React.FC<StepFormProps> = ({ current }) => {
+const ComposeMessage: React.FC<StepFormProps> = ({ current, data }) => {
   const { formatMessage } = useIntl();
   const [stepComponent, setStepComponent] = useState<React.ReactNode>(<Step1 />);
   const [currentStep, setCurrentStep] = useState<number>(0);
@@ -41,7 +42,6 @@ const ComposeMessage: React.FC<StepFormProps> = ({ current }) => {
     setCurrentStep(step);
     setStepComponent(component);
   }, [current]);
-
   return (
     <MasterWrapper>
       <PageHeaderWrapper content={formatMessage({ id: 'compose-form.description' })}>
@@ -50,7 +50,9 @@ const ComposeMessage: React.FC<StepFormProps> = ({ current }) => {
             <Steps current={currentStep} className={styles.steps}>
               <Step title={formatMessage({ id: 'compose-form.step1-title' })} />
               <Step title={formatMessage({ id: 'compose-form.step2-title' })} />
-              <Step title={formatMessage({ id: 'compose-form.step3-title' })} />
+              {data.type === 'sms' && (
+                <Step title={formatMessage({ id: 'compose-form.step3-title' })} />
+              )}
               <Step title={formatMessage({ id: 'compose-form.step4-title' })} />
             </Steps>
             {stepComponent}
@@ -63,4 +65,5 @@ const ComposeMessage: React.FC<StepFormProps> = ({ current }) => {
 
 export default connect(({ composeMessage }: { composeMessage: StateType }) => ({
   current: composeMessage.current,
+  data: composeMessage.step,
 }))(ComposeMessage);
