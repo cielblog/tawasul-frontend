@@ -18,6 +18,7 @@ import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { ConnectState } from '@/models/connect';
 import { getAuthorityFromRouter } from '@/utils/utils';
+// import jwt from 'jsonwebtoken'
 import MasterLayout from '@/layouts/MasterLayout';
 import logo from '../assets/smallLogo.png';
 
@@ -42,6 +43,7 @@ export interface BasicLayoutProps extends ProLayoutProps {
   };
   settings: Settings;
   dispatch: Dispatch;
+  token: string | null;
 }
 export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
   breadcrumbNameMap: {
@@ -92,10 +94,17 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
     location = {
       pathname: '/',
     },
+    token,
   } = props;
   /**
    * constructor
    */
+
+  if (token) {
+    // Check token
+    // const decodedToken: Token = jwt.decode(token, {complete: true});
+    // const now = new Date();
+  }
 
   useEffect(() => {
     if (dispatch) {
@@ -180,7 +189,8 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
   );
 };
 
-export default connect(({ global, settings }: ConnectState) => ({
+export default connect(({ global, settings, auth }: ConnectState) => ({
   collapsed: global.collapsed,
+  token: auth.token,
   settings,
 }))(BasicLayout);

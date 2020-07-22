@@ -1,19 +1,11 @@
 import React, { useState } from 'react';
-import { Form, Button, Divider, Input, Select } from 'antd';
+import { Form, Button, Divider, Select } from 'antd';
 import { connect, Dispatch, useIntl, FormattedMessage } from 'umi';
 import { StateType } from '../../model';
 import styles from './index.less';
 
 const { Option } = Select;
 
-const formItemLayout = {
-  labelCol: {
-    span: 5,
-  },
-  wrapperCol: {
-    span: 19,
-  },
-};
 interface Step1Props {
   data?: StateType['step'];
   dispatch?: Dispatch<any>;
@@ -25,7 +17,7 @@ const Step1: React.FC<Step1Props> = (props) => {
   const [form] = Form.useForm();
   const { getFieldValue, setFieldsValue } = form;
   const [recipientDropDown, toggleRecipientDropDown] = useState(false);
-  const [destinationType, setDestinationType] = useState('');
+  const [destinationType, setDestinationType] = useState(data?.destination);
 
   if (!data) {
     return null;
@@ -35,43 +27,51 @@ const Step1: React.FC<Step1Props> = (props) => {
     const values = await validateFields();
     if (dispatch) {
       dispatch({
-        type: 'formAndstepForm/saveStepFormData',
+        type: 'composeMessage/saveForm',
         payload: values,
       });
       dispatch({
-        type: 'formAndstepForm/saveCurrentStep',
-        payload: 'confirm',
+        type: 'composeMessage/saveCurrentStep',
+        payload: 'message-content',
       });
     }
   };
 
   const mobileValidator = (rule, values, callback) => {
-    const regex: RegExp = /^(05|5)(5|0|3|6|4|9|1|8|7)([0-9]{7})$/;
-    const invalidInputs: string[] = values.filter((value: string) => !value.match(regex));
-    if (invalidInputs.length === 0) {
-      callback();
-    } else if (invalidInputs.length === 1) {
-      callback(
-        formatMessage(
-          { id: 'compose-form.field-mobile-wrong' },
-          { mobile: invalidInputs.join('') },
-        ),
-      );
-    } else {
-      callback(
-        `${invalidInputs.slice(0, -1).join(', ')} and ${invalidInputs.slice(
-          -1,
-        )} are not valid emails`,
-      );
-    }
+    if (values) {
+      if (values.length === 0) {
+        callback(formatMessage({ id: 'compose-form.field-required' }));
+      }
 
-    if (invalidInputs.length > 0) {
-      toggleRecipientDropDown(false);
-      const tempValues: string[] = getFieldValue('recipients');
-      const newValues = tempValues.filter((value: string) => invalidInputs.indexOf(value) === -1);
-      setFieldsValue({
-        recipients: newValues,
-      });
+      const regex: RegExp = /^(05|5)(5|0|3|6|4|9|1|8|7)([0-9]{7})$/;
+      const invalidInputs: string[] = values.filter((value: string) => !value.match(regex));
+      if (invalidInputs.length === 0) {
+        callback();
+      } else if (invalidInputs.length === 1) {
+        callback(
+          formatMessage(
+            { id: 'compose-form.field-mobile-wrong' },
+            { mobile: invalidInputs.join('') },
+          ),
+        );
+      } else {
+        callback(
+          formatMessage(
+            { id: 'compose-form.field-mobiles-wrong' },
+            { mobiles: `${invalidInputs.slice(0, -1).join(', ')} and ${invalidInputs.slice(-1)}` },
+          ),
+        );
+      }
+      if (invalidInputs.length > 0) {
+        toggleRecipientDropDown(false);
+        const tempValues: string[] = getFieldValue('recipients');
+        const newValues = tempValues.filter((value: string) => invalidInputs.indexOf(value) === -1);
+        setFieldsValue({
+          recipients: newValues,
+        });
+      }
+    } else {
+      callback(formatMessage({ id: 'compose-form.field-required' }));
     }
   };
 
@@ -80,17 +80,13 @@ const Step1: React.FC<Step1Props> = (props) => {
   };
   return (
     <>
-      <Form
-        form={form}
-        layout="vertical"
-        className={styles.stepForm}
-        hideRequiredMark
-        initialValues={data}
-      >
+      <Form form={form} layout="vertical" className={styles.stepForm} initialValues={data}>
         <Form.Item
           name="type"
           label={formatMessage({ id: 'compose-form.step1.type' })}
-          rules={[{ required: true, message: '请选择付款账户' }]}
+          rules={[
+            { required: true, message: formatMessage({ id: 'compose-form.field-required' }) },
+          ]}
         >
           <Select placeholder={formatMessage({ id: 'compose-form.please-choose' })}>
             <Option value="email">
@@ -108,6 +104,9 @@ const Step1: React.FC<Step1Props> = (props) => {
         <Form.Item
           name="destination"
           label={formatMessage({ id: 'compose-form.step1.destination' })}
+          rules={[
+            { required: true, message: formatMessage({ id: 'compose-form.field-required' }) },
+          ]}
         >
           <Select
             placeholder={formatMessage({ id: 'compose-form.please-choose' })}
@@ -160,52 +159,13 @@ const Step1: React.FC<Step1Props> = (props) => {
             />
           </Form.Item>
         )}
-        <Form.Item
-          label="收款人姓名"
-          name="receiverName"
-          rules={[{ required: true, message: '请输入收款人姓名' }]}
-        >
-          <Input placeholder="请输入收款人姓名" />
-        </Form.Item>
-        <Form.Item
-          label="转账金额"
-          name="amount"
-          rules={[
-            { required: true, message: '请输入转账金额' },
-            {
-              pattern: /^(\d+)((?:\.\d+)?)$/,
-              message: '请输入合法金额数字',
-            },
-          ]}
-        >
-          <Input prefix="￥" placeholder="请输入金额" />
-        </Form.Item>
-        <Form.Item
-          wrapperCol={{
-            xs: { span: 24, offset: 0 },
-            sm: {
-              span: formItemLayout.wrapperCol.span,
-              offset: formItemLayout.labelCol.span,
-            },
-          }}
-        >
+        <Divider style={{ margin: '40px 0 24px' }} />
+        <Form.Item className="pull-right">
           <Button type="primary" onClick={onValidateForm}>
-            下一步
+            <FormattedMessage id="component.next" />
           </Button>
         </Form.Item>
       </Form>
-      <Divider style={{ margin: '40px 0 24px' }} />
-      <div className={styles.desc}>
-        <h3>说明</h3>
-        <h4>转账到支付宝账户</h4>
-        <p>
-          如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。
-        </p>
-        <h4>转账到银行卡</h4>
-        <p>
-          如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。
-        </p>
-      </div>
     </>
   );
 };

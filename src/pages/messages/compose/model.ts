@@ -4,11 +4,12 @@ import { fakeSubmitForm } from './service';
 
 export interface StateType {
   current?: string;
-  step?: {
-    payAccount: string;
-    receiverAccount: string;
-    receiverName: string;
-    amount: string;
+  step: {
+    type: 'sms' | 'email' | 'pn' | null;
+    destination: string | null;
+    recipients: string[];
+    message: string | null;
+    title?: string;
   };
 }
 
@@ -19,7 +20,7 @@ export interface ModelType {
     submitStepForm: Effect;
   };
   reducers: {
-    saveStepFormData: Reducer<StateType>;
+    saveForm: Reducer<StateType>;
     saveCurrentStep: Reducer<StateType>;
   };
 }
@@ -28,12 +29,12 @@ const Model: ModelType = {
   namespace: 'composeMessage',
 
   state: {
-    current: 'info',
+    current: 'message-info',
     step: {
-      payAccount: 'ant-design@alipay.com',
-      receiverAccount: 'test@example.com',
-      receiverName: 'Alex',
-      amount: '500',
+      type: 'sms',
+      destination: 'recipients',
+      recipients: ['0530433647'],
+      message: null,
     },
   },
 
@@ -41,7 +42,7 @@ const Model: ModelType = {
     *submitStepForm({ payload }, { call, put }) {
       yield call(fakeSubmitForm, payload);
       yield put({
-        type: 'saveStepFormData',
+        type: 'saveForm',
         payload,
       });
       yield put({
@@ -59,7 +60,7 @@ const Model: ModelType = {
       };
     },
 
-    saveStepFormData(state, { payload }) {
+    saveForm(state, { payload }) {
       return {
         ...state,
         step: {

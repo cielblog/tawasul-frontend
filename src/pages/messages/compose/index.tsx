@@ -19,13 +19,13 @@ interface StepFormProps {
 const getCurrentStepAndComponent = (current?: string) => {
   switch (current) {
     case 'message-info':
-      return { step: 1, component: <Step2 /> };
+      return { step: 0, component: <Step1 /> };
     case 'message-content':
-      return { step: 2, component: <Step3 /> };
+      return { step: 1, component: <Step2 /> };
     case 'report':
       return { step: 2, component: <Step3 /> };
     case 'done':
-      return { step: 2, component: <Step3 /> };
+      return { step: 3, component: <Step3 /> };
     default:
       return { step: 0, component: <Step1 /> };
   }

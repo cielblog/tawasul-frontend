@@ -20,7 +20,8 @@ export default {
 
   // Validation
   'compose-form.field-required': 'هذا الحقل مطلوب!',
-  'compose-form.field-mobile-wrong': 'رقم الجوال {mobile} لا يتطابق مع المعايير المطلوبة',
+  'compose-form.field-mobile-wrong': 'رقم الجوال {mobile} لا يتطابق مع المعايير المطلوبة.',
+  'compose-form.field-mobiles-wrong': 'ارقام الجوال: ({mobiles}) لا تطابق المعايير المطلوبة.',
 
   'formandstep-form.email.required': 'Please enter your email!',
   'formandstep-form.email.wrong-format': 'The email address is in the wrong format!',
