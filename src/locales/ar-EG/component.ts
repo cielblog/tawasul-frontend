@@ -4,4 +4,6 @@ export default {
   'component.tagSelect.all': 'All',
   'component.next': 'التالي',
   'component.prev': 'السابق',
+  'component.token-expired': 'انتهت الجلسة',
+  'component.token-expired.description': 'تحتاج الى تسجيل الدخول مرة أخرى لانشاء جلسة جديدة.',
 };

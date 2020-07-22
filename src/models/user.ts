@@ -4,16 +4,16 @@ import { queryCurrent, query as queryUsers } from '@/services/user';
 import { setAuthority } from '@/utils/authority';
 
 export interface CurrentUser {
-  username: string | null;
-  ar_name?: string | null;
-  en_name?: string | null;
+  username: string;
+  ar_name?: string;
+  en_name?: string;
   id: number;
   roles: string[];
-  avatar: string | null;
+  avatar: string;
 }
 
 export interface UserModelState {
-  currentUser?: CurrentUser;
+  currentUser: CurrentUser;
 }
 
 export interface UserModelType {
@@ -38,7 +38,7 @@ const UserModel: UserModelType = {
       en_name: '',
       id: 0,
       roles: [],
-      avatar: null,
+      avatar: '',
     },
   },
 

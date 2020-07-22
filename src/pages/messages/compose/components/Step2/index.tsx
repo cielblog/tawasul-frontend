@@ -1,34 +1,45 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { Button, Divider, Form } from 'antd';
 import { connect, Dispatch, FormattedMessage } from 'umi';
 import SmsField from '@/pages/messages/compose/components/SmsField';
+import { UserModelState } from '@/models/user';
+import { FormInstance } from 'antd/lib/form';
+// Types
 import { StateType } from '../../model';
+// Assets
 import styles from './index.less';
 
 interface Step2Props {
   data: StateType['step'];
-  dispatch?: Dispatch<any>;
+  dispatch?: Dispatch;
   submitting?: boolean;
+  user: UserModelState;
 }
 
-const getMessageField = (current: 'sms' | 'email' | 'pn' | null) => {
-  switch (current) {
+interface MessageFieldProps {
+  type: 'sms' | 'email' | 'pn';
+  form: FormInstance;
+  defaultValue?: string;
+}
+
+const MessageField: React.FC<MessageFieldProps> = (props) => {
+  switch (props.type) {
     case 'sms':
-      return <SmsField />;
+      return <SmsField {...props} />;
     case 'email':
-      return <SmsField />;
+      return <SmsField {...props} />;
     case 'pn':
-      return <SmsField />;
+      return <SmsField {...props} />;
     default:
-      return '<div>Cannot load this type</div>';
+      return <>Cannot load this type</>;
   }
 };
 
 const Step2: React.FC<Step2Props> = (props) => {
   const [form] = Form.useForm();
-  const { data, dispatch, submitting } = props;
+  const { data, dispatch, submitting, user } = props;
   const { type } = data;
-  const field: ReactNode = getMessageField(type);
+  const { currentUser } = user;
 
   if (!data) {
     return null;
@@ -64,8 +75,9 @@ const Step2: React.FC<Step2Props> = (props) => {
   };
 
   return (
-    <Form form={form} layout="vertical" className={styles.stepForm} initialValues={data}>
-      {field}
+    <Form form={form} layout="vertical" className={styles.stepForm}>
+      <MessageField defaultValue={`${currentUser.username}: `} form={form} type={type!} />
+
       <Divider style={{ margin: '24px 0' }} />
       <Form.Item className={styles.stepActions}>
         <Button type="primary" onClick={onValidateForm} loading={submitting} className="pull-right">
@@ -82,13 +94,16 @@ export default connect(
   ({
     composeMessage,
     loading,
+    user,
   }: {
     composeMessage: StateType;
+    user: UserModelState;
     loading: {
       effects: { [key: string]: boolean };
     };
   }) => ({
     submitting: loading.effects['composeForm/submitStepForm'],
     data: composeMessage.step,
+    user,
   }),
 )(Step2);

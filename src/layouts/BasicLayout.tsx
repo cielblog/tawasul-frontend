@@ -4,22 +4,23 @@
  * https://github.com/ant-design/ant-design-pro-layout
  */
 import ProLayout, {
-  MenuDataItem,
   BasicLayoutProps as ProLayoutProps,
-  Settings,
   DefaultFooter,
+  MenuDataItem,
   SettingDrawer,
+  Settings,
 } from '@ant-design/pro-layout';
 import React, { useEffect } from 'react';
-import { Link, useIntl, connect, Dispatch } from 'umi';
+import { connect, Dispatch, FormattedMessage, Link, useIntl } from 'umi';
 import { GithubOutlined } from '@ant-design/icons';
-import { Result, Button } from 'antd';
+import { Button, Result } from 'antd';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { ConnectState } from '@/models/connect';
 import { getAuthorityFromRouter } from '@/utils/utils';
-// import jwt from 'jsonwebtoken'
+import jwt from 'jwt-decode';
 import MasterLayout from '@/layouts/MasterLayout';
+// Assets
 import logo from '../assets/smallLogo.png';
 
 const noMatch = (
@@ -34,6 +35,7 @@ const noMatch = (
     }
   />
 );
+
 export interface BasicLayoutProps extends ProLayoutProps {
   breadcrumbNameMap: {
     [path: string]: MenuDataItem;
@@ -45,6 +47,7 @@ export interface BasicLayoutProps extends ProLayoutProps {
   dispatch: Dispatch;
   token: string | null;
 }
+
 export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
   breadcrumbNameMap: {
     [path: string]: MenuDataItem;
@@ -56,7 +59,10 @@ export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
 
 const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
   menuList.map((item) => {
-    const localItem = { ...item, children: item.children ? menuDataRender(item.children) : [] };
+    const localItem = {
+      ...item,
+      children: item.children ? menuDataRender(item.children) : [],
+    };
     return Authorized.check(item.authority, localItem, null) as MenuDataItem;
   });
 
@@ -96,23 +102,59 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
     },
     token,
   } = props;
-  /**
-   * constructor
-   */
 
-  if (token) {
-    // Check token
-    // const decodedToken: Token = jwt.decode(token, {complete: true});
-    // const now = new Date();
+  const { formatMessage } = useIntl();
+
+  function checkTokenExpired(t: string) {
+    const decodedToken: any = jwt(t);
+    const now = Math.round(new Date().getTime() / 1000);
+    return now < decodedToken.exp;
   }
 
   useEffect(() => {
-    if (dispatch) {
-      dispatch({
-        type: 'user/fetchCurrent',
-      });
+    if (token && checkTokenExpired(token)) {
+      if (dispatch) {
+        dispatch({
+          type: 'user/fetchCurrent',
+        });
+      }
     }
   }, []);
+
+  if (token) {
+    // Check token
+    if (!checkTokenExpired(token)) {
+      return (
+        <Result
+          status="error"
+          title={formatMessage({ id: 'component.token-expired' })}
+          extra={
+            <MasterLayout>
+              <p>
+                <FormattedMessage id="component.token-expired.description" />
+              </p>
+              <Button
+                type="primary"
+                onClick={() => {
+                  dispatch({
+                    type: 'auth/logout',
+                  });
+                }}
+              >
+                <FormattedMessage id="menu.account.login" />
+              </Button>
+            </MasterLayout>
+          }
+        />
+      );
+    }
+  } else {
+    dispatch({
+      type: 'auth/logout',
+    });
+    return <>Session error</>;
+  }
+
   /**
    * init variables
    */
@@ -129,7 +171,6 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
   const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
     authority: undefined,
   };
-  const { formatMessage } = useIntl();
   return (
     <MasterLayout>
       <ProLayout

@@ -12,4 +12,5 @@ export default {
   'menu.dashboard.users': 'المستخدمين',
   'menu.account': 'الحساب',
   'menu.account.logout': 'تسجيل الخروج',
+  'menu.account.login': 'تسجيل الدخول',
 };

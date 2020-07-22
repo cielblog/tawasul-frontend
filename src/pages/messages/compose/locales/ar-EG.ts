@@ -18,6 +18,15 @@ export default {
   'compose-form.step1.enter-recipients': 'أدخل المستقبلين',
   'compose-form.please-enter-recipients': 'مثال: 055599999',
 
+  // Step two
+  'compose-form.step1.message': 'نص الرسالة',
+
+  // Field
+  'compose-form.sms-field.length': 'عدد الأحرف: {count}',
+  'compose-form.sms-field.parts': 'عدد الرسائل: {count}/{max}',
+  'compose-form.sms-field.price': 'القيمة التقريبية: {price}',
+  'compose-form.sms-field.rules': 'قواعد الرسالة',
+
   // Validation
   'compose-form.field-required': 'هذا الحقل مطلوب!',
   'compose-form.field-mobile-wrong': 'رقم الجوال {mobile} لا يتطابق مع المعايير المطلوبة.',

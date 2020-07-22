@@ -74,3 +74,13 @@ export function logout(): void {
   sessionStorage.removeItem('auth-token');
   localStorage.removeItem('roles');
 }
+
+export function isContainsArabic(s: string): boolean {
+  const regex = /[\u0600-\u06FF]/;
+  return regex.test(s);
+}
+
+export function calculateMessageParts(s: string): number {
+  const maxLength = isContainsArabic(s) ? 70 : 160;
+  return s.length <= maxLength ? 1 : Math.ceil(s.length / maxLength);
+}
