@@ -8,7 +8,7 @@ const { Option } = Select;
 
 interface Step1Props {
   data?: StateType['step'];
-  dispatch?: Dispatch<any>;
+  dispatch?: Dispatch;
 }
 
 const Step1: React.FC<Step1Props> = (props) => {
@@ -37,7 +37,11 @@ const Step1: React.FC<Step1Props> = (props) => {
     }
   };
 
-  const mobileValidator = (rule, values, callback) => {
+  const mobileValidator = (
+    rule: any,
+    values: any[],
+    callback: (arg0: string | undefined) => void,
+  ) => {
     if (values) {
       if (values.length === 0) {
         callback(formatMessage({ id: 'compose-form.field-required' }));
@@ -75,7 +79,7 @@ const Step1: React.FC<Step1Props> = (props) => {
     }
   };
 
-  const handleDestination = (value) => {
+  const handleDestination = (value: any) => {
     setDestinationType(value);
   };
   return (

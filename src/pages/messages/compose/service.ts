@@ -1,8 +1,11 @@
-import request from 'umi-request';
+import request from '@/utils/request';
 
-export async function fakeSubmitForm(params: any) {
-  return request('/api/forms', {
+export async function uploadEmailImage(data: FormData) {
+  return request('/v1/filemanager/upload', {
+    headers: {
+      'Content-Type': `multipart/form-data`,
+    },
     method: 'POST',
-    data: params,
+    data,
   });
 }
