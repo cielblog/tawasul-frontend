@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect, getLocale } from 'umi';
 // import { useIntl } from 'umi'
 import { FormInstance } from 'antd/es/form';
@@ -12,7 +12,10 @@ import 'froala-editor/js/languages/ar';
 
 import EditorComponent from 'react-froala-wysiwyg';
 import { AuthModelState } from '@/models/auth';
-import { uploadEmailImage } from '@/pages/messages/compose/service';
+import { viewEmail } from '@/pages/messages/compose/service';
+import FroalaEditor from 'froala-editor';
+import { EyeOutlined } from '@ant-design/icons-svg';
+import { renderIconDefinitionToSVGElement } from '@ant-design/icons-svg/es/helpers';
 
 // Include special components if required.
 // import FroalaEditorView from 'react-froala-wysiwyg/FroalaEditorView';
@@ -29,18 +32,37 @@ interface SmsFieldProps {
   token?: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const EmailField: React.FC<SmsFieldProps> = (props) => {
   // const { token, form, defaultValue } = props;
   // const { formatMessage } = useIntl();
+  // const [toggleView, setToggleView] = useState(false);
+  // const [viewContent, setViewContent] = useState(false);
 
-  useEffect(function () {
-    console.log(props);
-  }, []);
+  const viewTemplateIcon = renderIconDefinitionToSVGElement(EyeOutlined, {});
+  FroalaEditor.RegisterCommand('viewTemplate', {
+    title: 'Insert variable',
+    icon: viewTemplateIcon,
+    focus: true,
+    undo: true,
+    refreshAfterCallback: true,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    callback(cmd: any, val: any) {
+      const data: any = {
+        subject: 'test',
+        message: 'test',
+      };
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      viewEmail(data).then((response) => {});
+    },
+  });
+
   return (
     <>
       <EditorComponent
         tag="textarea"
         config={{
+          imageInsertButtons: ['imageBack', '|', 'imageUpload', 'imageByURL'],
           toolbarButtons: {
             moreText: {
               buttons: [
@@ -88,6 +110,7 @@ const EmailField: React.FC<SmsFieldProps> = (props) => {
             },
             moreMisc: {
               buttons: [
+                'viewTemplate',
                 'undo',
                 'redo',
                 'fullscreen',
@@ -103,22 +126,14 @@ const EmailField: React.FC<SmsFieldProps> = (props) => {
             },
           },
           key: 'CTD5xD3D2D2A1A3B8wgD-13B-11D5uugA2gtjC5D4C3E3J2B7A6C4A4A2=',
-          imageManagerLoadURL: '/v1/email/attachment-manager',
-          imageUpload: true,
           language: getLocale() === 'ar-EG' ? 'ar' : 'en',
           direction: getLocale() === 'ar-EG' ? 'rtl' : 'ltr',
           heightMax: 500,
           events: {
-            'image.beforeUpload': function (images) {
-              // const instance = this;
-              const data = new FormData();
-              data.append('images[]', images[0]);
-
-              uploadEmailImage(data).then((response) => {
-                console.log(response);
-              });
-
-              return false;
+            'image.beforeUpload': function (images: Blob[]) {
+              // Do something here.
+              // this is the editor instance.
+              console.log(images);
             },
           },
         }}

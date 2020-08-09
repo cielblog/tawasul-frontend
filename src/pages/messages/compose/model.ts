@@ -1,7 +1,5 @@
 import { Effect, Reducer } from 'umi';
 
-import { fakeSubmitForm } from './service';
-
 export interface StateType {
   current?: string;
   step: {
@@ -29,9 +27,9 @@ const Model: ModelType = {
   namespace: 'composeMessage',
 
   state: {
-    current: 'message-info',
+    current: 'message-content',
     step: {
-      type: 'sms',
+      type: 'email',
       destination: 'recipients',
       recipients: ['0530433647'],
       message: null,
@@ -39,16 +37,17 @@ const Model: ModelType = {
   },
 
   effects: {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     *submitStepForm({ payload }, { call, put }) {
-      yield call(fakeSubmitForm, payload);
-      yield put({
-        type: 'saveForm',
-        payload,
-      });
-      yield put({
-        type: 'saveCurrentStep',
-        payload: 'result',
-      });
+      // yield call(fakeSubmitForm, payload);
+      // yield put({
+      //   type: 'saveForm',
+      //   payload,
+      // });
+      // yield put({
+      //   type: 'saveCurrentStep',
+      //   payload: 'result',
+      // });
     },
   },
 
