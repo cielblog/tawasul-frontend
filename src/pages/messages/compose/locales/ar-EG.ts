@@ -19,18 +19,20 @@ export default {
   'compose-form.please-enter-recipients': 'مثال: 055599999',
 
   // Step two
-  'compose-form.step1.message': 'نص الرسالة',
+  'compose-form.step2.message': 'نص الرسالة',
+  'compose-form.step2.subject': 'عنوان الرسالة',
 
   // Field
   'compose-form.sms-field.length': 'عدد الأحرف: {count}',
   'compose-form.sms-field.parts': 'عدد الرسائل: {count}/{max}',
   'compose-form.sms-field.price': 'القيمة التقريبية: {price}',
   'compose-form.sms-field.rules': 'قواعد الرسالة',
+  'compose-form.email-field.modal-title': 'معاينة الرسالة',
 
   // Validation
   'compose-form.field-required': 'هذا الحقل مطلوب!',
-  'compose-form.field-mobile-wrong': 'رقم الجوال {mobile} لا يتطابق مع المعايير المطلوبة.',
-  'compose-form.field-mobiles-wrong': 'ارقام الجوال: ({mobiles}) لا تطابق المعايير المطلوبة.',
+  'compose-form.field-mobile-wrong': 'رقم الجوال {val} لا يتطابق مع المعايير المطلوبة.',
+  'compose-form.field-email-wrong': 'البريد الإلكتروني {val} لا يتطابق مع المعايير المطلوبة.',
 
   'formandstep-form.email.required': 'Please enter your email!',
   'formandstep-form.email.wrong-format': 'The email address is in the wrong format!',

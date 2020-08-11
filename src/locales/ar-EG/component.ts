@@ -6,4 +6,5 @@ export default {
   'component.prev': 'السابق',
   'component.token-expired': 'انتهت الجلسة',
   'component.token-expired.description': 'تحتاج الى تسجيل الدخول مرة أخرى لانشاء جلسة جديدة.',
+  'component.close': 'اغلاق',
 };

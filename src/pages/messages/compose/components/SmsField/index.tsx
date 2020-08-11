@@ -15,6 +15,7 @@ interface SmsFieldProps {
 
 const SmsField: React.FC<SmsFieldProps> = (props) => {
   const { form, defaultValue } = props;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { formatMessage } = useIntl();
   const [parts, setParts] = useState(calculateMessageParts(defaultValue!));
   const [length, setLength] = useState(defaultValue?.length);
@@ -65,20 +66,13 @@ const SmsField: React.FC<SmsFieldProps> = (props) => {
 
   return (
     <>
-      <Form.Item
-        name="message"
-        label={formatMessage({ id: 'compose-form.step1.message' })}
-        initialValue={defaultValue}
-        rules={[{ required: true, message: formatMessage({ id: 'compose-form.field-required' }) }]}
-      >
-        <TextArea
-          autoSize={{
-            minRows: 6,
-          }}
-          id="smsField"
-          onChange={handleChange}
-        />
-      </Form.Item>
+      <TextArea
+        autoSize={{
+          minRows: 6,
+        }}
+        id="smsField"
+        onChange={handleChange}
+      />
       <Form.Item>
         <div className="pull-left">
           <Tag icon={<NumberOutlined />} color="default">

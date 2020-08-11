@@ -1,4 +1,5 @@
 import { Effect, Reducer } from 'umi';
+import { sendMessage } from '@/pages/messages/compose/service';
 
 export interface StateType {
   current?: string;
@@ -7,7 +8,7 @@ export interface StateType {
     destination: string | null;
     recipients: string[];
     message: string | null;
-    title?: string;
+    subject?: string | null;
   };
 }
 
@@ -27,27 +28,28 @@ const Model: ModelType = {
   namespace: 'composeMessage',
 
   state: {
-    current: 'message-content',
+    current: 'message-info',
     step: {
-      type: 'email',
-      destination: 'recipients',
-      recipients: ['0530433647'],
+      type: null,
+      destination: '',
+      recipients: [],
       message: null,
+      subject: null,
     },
   },
 
   effects: {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     *submitStepForm({ payload }, { call, put }) {
-      // yield call(fakeSubmitForm, payload);
-      // yield put({
-      //   type: 'saveForm',
-      //   payload,
-      // });
-      // yield put({
-      //   type: 'saveCurrentStep',
-      //   payload: 'result',
-      // });
+      yield call(sendMessage, payload);
+      yield put({
+        type: 'saveForm',
+        payload,
+      });
+      yield put({
+        type: 'saveCurrentStep',
+        payload: 'done',
+      });
     },
   },
 

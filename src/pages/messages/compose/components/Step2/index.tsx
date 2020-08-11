@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button, Divider, Form } from 'antd';
-import { connect, Dispatch, FormattedMessage } from 'umi';
+import { Button, Divider, Form, Input } from 'antd';
+import { connect, Dispatch, FormattedMessage, useIntl } from 'umi';
 import SmsField from '@/pages/messages/compose/components/SmsField';
 import EmailField from '@/pages/messages/compose/components/EmailField';
 import { UserModelState } from '@/models/user';
@@ -37,6 +37,7 @@ const MessageField: React.FC<MessageFieldProps> = (props) => {
 };
 
 const Step2: React.FC<Step2Props> = (props) => {
+  const { formatMessage } = useIntl();
   const [form] = Form.useForm();
   const { data, dispatch, submitting, user } = props;
   const { type } = data;
@@ -66,7 +67,7 @@ const Step2: React.FC<Step2Props> = (props) => {
     const values = await validateFields();
     if (dispatch) {
       dispatch({
-        type: 'composeForm/submitStepForm',
+        type: 'composeMessage/submitStepForm',
         payload: {
           ...data,
           ...values,
@@ -77,7 +78,33 @@ const Step2: React.FC<Step2Props> = (props) => {
 
   return (
     <Form form={form} layout="vertical" className={styles.stepForm}>
-      <MessageField defaultValue={`${currentUser.username}: `} form={form} type={type!} />
+      {type === 'email' && (
+        <Form.Item
+          name="subject"
+          label={formatMessage({ id: 'compose-form.step2.subject' })}
+          rules={[
+            {
+              required: true,
+              message: formatMessage({ id: 'compose-form.field-required' }),
+            },
+          ]}
+        >
+          <Input type="text" />
+        </Form.Item>
+      )}
+
+      <Form.Item
+        name="message"
+        label={formatMessage({ id: 'compose-form.step2.message' })}
+        rules={[
+          {
+            required: true,
+            message: formatMessage({ id: 'compose-form.field-required' }),
+          },
+        ]}
+      >
+        <MessageField defaultValue={`${currentUser.username}: `} form={form} type={type!} />
+      </Form.Item>
 
       <Divider style={{ margin: '24px 0' }} />
       <Form.Item className={styles.stepActions}>
