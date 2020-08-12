@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Card, Steps } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import MasterWrapper from '@/components/MasterWrapper';
-import { connect, useIntl } from 'umi';
+import { connect, useIntl, Dispatch } from 'umi';
 import { StateType } from './model';
 
 import Step1 from './components/Step1';
 import Step2 from './components/Step2';
 import Step3 from './components/Step3';
+import Step4 from './components/Step4';
+
 import styles from './style.less';
 
 const { Step } = Steps;
@@ -15,6 +17,7 @@ const { Step } = Steps;
 interface StepFormProps {
   current: StateType['current'];
   data: StateType['step'];
+  dispatch?: Dispatch;
 }
 
 const getCurrentStepAndComponent = (current?: string) => {
@@ -26,22 +29,35 @@ const getCurrentStepAndComponent = (current?: string) => {
     case 'report':
       return { step: 2, component: <Step3 /> };
     case 'done':
-      return { step: 3, component: <Step3 /> };
+      return { step: 3, component: <Step4 /> };
     default:
       return { step: 0, component: <Step1 /> };
   }
 };
 
-const ComposeMessage: React.FC<StepFormProps> = ({ current, data }) => {
+const ComposeMessage: React.FC<StepFormProps> = (props) => {
   const { formatMessage } = useIntl();
   const [stepComponent, setStepComponent] = useState<React.ReactNode>(<Step1 />);
   const [currentStep, setCurrentStep] = useState<number>(0);
+  const { data, current, dispatch } = props;
 
   useEffect(() => {
     const { step, component } = getCurrentStepAndComponent(current);
     setCurrentStep(step);
     setStepComponent(component);
   }, [current]);
+
+  // @ts-ignore
+  // eslint-disable-next-line consistent-return
+  useEffect(() => {
+    if (dispatch) {
+      return () => {
+        dispatch({
+          type: 'composeMessage/reset',
+        });
+      };
+    }
+  }, []);
   return (
     <MasterWrapper>
       <PageHeaderWrapper content={formatMessage({ id: 'compose-form.description' })}>

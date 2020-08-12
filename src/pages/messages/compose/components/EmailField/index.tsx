@@ -3,6 +3,7 @@ import { FormattedMessage, getLocale, useIntl } from 'umi';
 // import { useIntl } from 'umi'
 import { FormInstance } from 'antd/lib/form';
 import EditorComponent from 'react-froala-wysiwyg';
+
 // @ts-ignore
 import FroalaEditor from 'froala-editor';
 // Require Editor CSS files.
@@ -48,7 +49,7 @@ const EmailField: React.FC<EmailFieldProps> = (props) => {
     setViewTemplateModalContent(null);
   }
 
-  function handleMessageChange(editor) {
+  function handleMessageChange(editor: FroalaEditor) {
     const html = editor.html.get(true);
     form.setFieldsValue({
       message: html,
@@ -133,7 +134,7 @@ const EmailField: React.FC<EmailFieldProps> = (props) => {
           // Do something here.
           // this is the editor instance.
         },
-        'image.beforeUpload': (images) => {
+        'image.beforeUpload': (images: Blob[]) => {
           // const instance = this;
           const data = new FormData();
           data.append('image', images[0]);
@@ -146,7 +147,7 @@ const EmailField: React.FC<EmailFieldProps> = (props) => {
           return false;
         },
         contentChanged: () => handleMessageChange(editor),
-        'paste.before': (e) => {
+        'paste.before': (e: any) => {
           const clipboardInstance: DataTransfer = e.clipboardData;
           const data = clipboardInstance.getData('text');
           editor.html.insert(data);
@@ -166,7 +167,6 @@ const EmailField: React.FC<EmailFieldProps> = (props) => {
       refreshAfterCallback: true,
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       callback(cmd: any, val: any) {
-        console.log(form.getFieldValue('subject'), form.getFieldValue('message'));
         const data: any = {
           subject: form.getFieldValue('subject'),
           message: form.getFieldValue('message'),

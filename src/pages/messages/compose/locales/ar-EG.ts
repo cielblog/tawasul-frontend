@@ -22,6 +22,20 @@ export default {
   'compose-form.step2.message': 'نص الرسالة',
   'compose-form.step2.subject': 'عنوان الرسالة',
 
+  // Step three
+  'compose-form.step3.result-title': 'أعرنا انتباهك',
+  'compose-form.step3.result-success': 'بإمكانك ارسال هذه الرسالة، وهذه تقرير مختصر عن رسالتك',
+  'compose-form.step3.price': 'قيمة الرسالة',
+  'compose-form.step3.myBalance': 'رصيدك الحالي',
+  'compose-form.step3.newBalance': 'الرصيد بعد الخصم',
+  'compose-form.step3.numberRecipients': 'عدد المستلمين',
+  'compose-form.step3.confirm': 'بإرسالك للرسالة فأنت توافق على {s}',
+
+  // Step four
+  'compose-form.step4.sending': 'يجري ارسال رسالتك...',
+  'compose-form.step4.details': 'لحظات من فضلك، لن تستغرق العملية الكثير من الوقت',
+  'compose-form.step4.done': 'شكرًا لك',
+
   // Field
   'compose-form.sms-field.length': 'عدد الأحرف: {count}',
   'compose-form.sms-field.parts': 'عدد الرسائل: {count}/{max}',

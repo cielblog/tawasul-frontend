@@ -6,11 +6,11 @@ import settingDrawer from './ar-EG/settingDrawer';
 import settings from './ar-EG/settings';
 
 export default {
-  'appname': 'نظام تواصل',
+  appname: 'نظام تواصل',
   'navBar.lang': 'اللغات',
   'layout.user.link.help': 'المساعدة',
   'layout.user.link.privacy': 'سياسة الخصوصية',
-  'layout.user.link.terms': 'الشروط والأحكام',
+  'global.use-term': 'الشروط والأحكام',
   'app.preview.down.block': 'Download this page to your local project',
   'app.welcome.link.fetch-blocks': 'Get all block',
   'app.welcome.link.block-list': 'Quickly build standard, pages based on `block` development',

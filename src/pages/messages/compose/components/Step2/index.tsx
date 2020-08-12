@@ -13,7 +13,6 @@ import styles from './index.less';
 interface Step2Props {
   data: StateType['step'];
   dispatch?: Dispatch;
-  submitting?: boolean;
   user: UserModelState;
 }
 
@@ -39,7 +38,7 @@ const MessageField: React.FC<MessageFieldProps> = (props) => {
 const Step2: React.FC<Step2Props> = (props) => {
   const { formatMessage } = useIntl();
   const [form] = Form.useForm();
-  const { data, dispatch, submitting, user } = props;
+  const { data, dispatch, user } = props;
   const { type } = data;
   const { currentUser } = user;
 
@@ -65,14 +64,27 @@ const Step2: React.FC<Step2Props> = (props) => {
   };
   const onValidateForm = async () => {
     const values = await validateFields();
+
     if (dispatch) {
       dispatch({
-        type: 'composeMessage/submitStepForm',
+        type: 'composeMessage/saveForm',
         payload: {
           ...data,
           ...values,
         },
       });
+
+      if (props.data.type === 'sms') {
+        dispatch({
+          type: 'composeMessage/saveCurrentStep',
+          payload: 'report',
+        });
+      } else {
+        dispatch({
+          type: 'composeMessage/saveCurrentStep',
+          payload: 'done',
+        });
+      }
     }
   };
 
@@ -108,7 +120,7 @@ const Step2: React.FC<Step2Props> = (props) => {
 
       <Divider style={{ margin: '24px 0' }} />
       <Form.Item className={styles.stepActions}>
-        <Button type="primary" onClick={onValidateForm} loading={submitting} className="pull-right">
+        <Button type="primary" onClick={onValidateForm} className="pull-right">
           <FormattedMessage id="component.next" />
         </Button>
         <Button onClick={onPrev} className="pull-left">
@@ -119,18 +131,7 @@ const Step2: React.FC<Step2Props> = (props) => {
   );
 };
 export default connect(
-  ({
-    composeMessage,
-    loading,
-    user,
-  }: {
-    composeMessage: StateType;
-    user: UserModelState;
-    loading: {
-      effects: { [key: string]: boolean };
-    };
-  }) => ({
-    submitting: loading.effects['composeForm/submitStepForm'],
+  ({ composeMessage, user }: { composeMessage: StateType; user: UserModelState }) => ({
     data: composeMessage.step,
     user,
   }),

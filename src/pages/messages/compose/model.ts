@@ -3,12 +3,16 @@ import { sendMessage } from '@/pages/messages/compose/service';
 
 export interface StateType {
   current?: string;
-  step: {
+  step?: {
     type: 'sms' | 'email' | 'pn' | null;
     destination: string | null;
     recipients: string[];
     message: string | null;
     subject?: string | null;
+  };
+  server?: {
+    status: 'idle' | 'success' | 'error';
+    error: any;
   };
 }
 
@@ -21,6 +25,8 @@ export interface ModelType {
   reducers: {
     saveForm: Reducer<StateType>;
     saveCurrentStep: Reducer<StateType>;
+    reset: Reducer<StateType>;
+    saveServerStatus: Reducer<StateType>;
   };
 }
 
@@ -28,28 +34,42 @@ const Model: ModelType = {
   namespace: 'composeMessage',
 
   state: {
-    current: 'message-info',
+    current: 'done',
     step: {
-      type: null,
-      destination: '',
-      recipients: [],
+      type: 'email',
+      destination: 'recipients',
+      recipients: ['nkhalifah.c@ksu.edu.sa'],
       message: null,
-      subject: null,
+      subject: 'TEST',
+    },
+    server: {
+      status: 'idle',
+      error: null,
     },
   },
 
   effects: {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     *submitStepForm({ payload }, { call, put }) {
-      yield call(sendMessage, payload);
-      yield put({
-        type: 'saveForm',
-        payload,
-      });
-      yield put({
-        type: 'saveCurrentStep',
-        payload: 'done',
-      });
+      try {
+        const response = yield call(sendMessage, payload);
+
+        yield put({
+          type: 'saveServerStatus',
+          payload: {
+            status: 'success',
+            error: response,
+          },
+        });
+      } catch (e) {
+        yield put({
+          type: 'saveServerStatus',
+          payload: {
+            status: 'error',
+            error: e.data,
+          },
+        });
+      }
     },
   },
 
@@ -61,12 +81,33 @@ const Model: ModelType = {
       };
     },
 
+    saveServerStatus(state, { payload }) {
+      return {
+        ...state,
+        server: payload,
+      };
+    },
+
     saveForm(state, { payload }) {
       return {
         ...state,
         step: {
           ...(state as StateType).step,
           ...payload,
+        },
+      };
+    },
+
+    reset(state) {
+      return {
+        ...state,
+        current: 'message-info',
+        step: {
+          type: null,
+          destination: null,
+          recipients: [],
+          message: null,
+          subject: null,
         },
       };
     },
