@@ -35,7 +35,7 @@ export default {
   'compose-form.step4.sending': 'يجري ارسال رسالتك...',
   'compose-form.step4.details': 'لحظات من فضلك، لن تستغرق العملية الكثير من الوقت',
   'compose-form.step4.done': 'شكرًا لك',
-
+  'compose-form.step4.sending-error-title': 'لم يتم اتمام الطلب',
   // Field
   'compose-form.sms-field.length': 'عدد الأحرف: {count}',
   'compose-form.sms-field.parts': 'عدد الرسائل: {count}/{max}',

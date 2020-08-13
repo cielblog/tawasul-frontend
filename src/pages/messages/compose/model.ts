@@ -37,10 +37,10 @@ const Model: ModelType = {
     current: 'done',
     step: {
       type: 'email',
-      destination: 'recipients',
-      recipients: ['nkhalifah.c@ksu.edu.sa'],
+      destination: null,
+      recipients: [],
       message: null,
-      subject: 'TEST',
+      subject: null,
     },
     server: {
       status: 'idle',
