@@ -34,9 +34,9 @@ const Model: ModelType = {
   namespace: 'composeMessage',
 
   state: {
-    current: 'done',
+    current: 'message-info',
     step: {
-      type: 'email',
+      type: null,
       destination: null,
       recipients: [],
       message: null,

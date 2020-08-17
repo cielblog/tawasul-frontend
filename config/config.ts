@@ -99,7 +99,7 @@ export default defineConfig({
                 {
                   path: '/groups/my',
                   name: 'list',
-                  component: './list/search',
+                  component: './groups',
                 },
                 {
                   name: 'managed-list',

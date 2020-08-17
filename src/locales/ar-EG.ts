@@ -4,6 +4,7 @@ import menu from './ar-EG/menu';
 import pwa from './ar-EG/pwa';
 import settingDrawer from './ar-EG/settingDrawer';
 import settings from './ar-EG/settings';
+import table from './ar-EG/table';
 
 export default {
   appname: 'نظام تواصل',
@@ -20,4 +21,5 @@ export default {
   ...settings,
   ...pwa,
   ...component,
+  ...table,
 };

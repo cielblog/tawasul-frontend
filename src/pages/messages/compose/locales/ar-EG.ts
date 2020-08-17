@@ -1,5 +1,5 @@
 export default {
-  'compose-form.description': 'Basic form',
+  'compose-form.description': 'ارسال رسالة (نصية قصيرة، بريد الكتروني، تنبيه) للمستفيدين.',
   'compose-form.step1-title': 'معلومات الرسالة',
   'compose-form.step2-title': 'محتوى الرسالة',
   'compose-form.step3-title': 'تقرير مختصر',

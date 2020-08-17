@@ -9,4 +9,7 @@ export default {
   'component.close': 'اغلاق',
   'component.accept': 'موافق',
   'component.reject': 'لا أوافق',
+  'component.save': 'حفظ',
+  'component.cancel': 'إلغاء الأمر',
+  'component.edit': 'تعديل',
 };
