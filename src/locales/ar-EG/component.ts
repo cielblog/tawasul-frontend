@@ -8,8 +8,11 @@ export default {
   'component.token-expired.description': 'تحتاج الى تسجيل الدخول مرة أخرى لانشاء جلسة جديدة.',
   'component.close': 'اغلاق',
   'component.accept': 'موافق',
-  'component.reject': 'لا أوافق',
   'component.save': 'حفظ',
   'component.cancel': 'إلغاء الأمر',
   'component.edit': 'تعديل',
+  'component.activated': 'مفعلة',
+  'component.disabled': 'معطلة',
+  'component.confirm': 'تأكيد',
+  'component.reject': 'رفض',
 };

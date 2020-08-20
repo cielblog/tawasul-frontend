@@ -3,7 +3,7 @@ export interface TableListItem {
   title?: boolean;
   number_members: string;
   avatar: string;
-  activated: number;
+  activated: boolean;
   updated_at: Date;
   createdAt: Date;
   updatedAt: Date;

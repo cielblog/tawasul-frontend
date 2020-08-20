@@ -9,13 +9,9 @@ export async function queryRule(params?: any) {
   });
 }
 
-export async function removeRule(params: { key: number[] }) {
-  return request('/api/rule', {
-    method: 'POST',
-    data: {
-      ...params,
-      method: 'delete',
-    },
+export async function removeGroup(params: string) {
+  return request(`/v1/groups/${params}`, {
+    method: 'DELETE',
   });
 }
 
@@ -29,12 +25,23 @@ export async function addGroup(params: FormValueType) {
   });
 }
 
-export async function updateRule(params: TableListParams) {
-  return request('/api/rule', {
+export async function updateGroup(id: number, params: TableListParams) {
+  return request(`/v1/groups/${id}`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+export async function getGroup(id: number) {
+  return request(`/v1/groups/${id}`, { method: 'GET' });
+}
+
+export async function updateGroupStatus(ids: number[], status: number) {
+  return request('/v1/groups/update-status', {
     method: 'POST',
     data: {
-      ...params,
-      method: 'update',
+      status,
+      ids,
     },
   });
 }

@@ -106,9 +106,14 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
   const { formatMessage } = useIntl();
 
   function checkTokenExpired(t: string) {
-    const decodedToken: any = jwt(t);
-    const now = Math.round(new Date().getTime() / 1000);
-    return now < decodedToken.exp;
+    try {
+      const decodedToken: any = jwt(t);
+      const now = Math.round(new Date().getTime() / 1000);
+      return now < decodedToken.exp;
+    } catch (e) {
+      console.log('invalid token');
+      return false;
+    }
   }
 
   useEffect(() => {

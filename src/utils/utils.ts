@@ -84,3 +84,33 @@ export function calculateMessageParts(s: string): number {
   const maxLength = isContainsArabic(s) ? 70 : 160;
   return s.length <= maxLength ? 1 : Math.ceil(s.length / maxLength);
 }
+
+export function paginate(array: any[], page_size: number, page_number: number) {
+  // human-readable page numbers usually start with 1, so we reduce 1 in the first argument
+  return array.slice((page_number - 1) * page_size, page_number * page_size);
+}
+
+export function getValidationErrors(errors: any): any[] {
+  const array: any[] = [];
+
+  errors.map((error: any) => {
+    if (error.hasOwnProperty('field')) {
+      const searchForObject: any = array.find((obj) => obj.name === error.field);
+      const object: any = searchForObject || {};
+      const objectErrors: string[] = object.errors ? object.errors : [];
+      object.name = error.field;
+      if (error.hasOwnProperty('message')) {
+        objectErrors.push(error.message);
+        object.errors = objectErrors;
+      }
+
+      if (object.errors && object.errors.length > 0) {
+        array.push(object);
+      }
+    }
+
+    return error;
+  });
+
+  return array;
+}

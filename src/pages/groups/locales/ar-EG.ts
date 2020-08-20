@@ -2,6 +2,11 @@ export default {
   'groups-list.description': 'ارسال رسالة (نصية قصيرة، بريد الكتروني، تنبيه) للمستفيدين.',
   'group-list.create-button': 'إضافة مجموعة',
   'groups-list.button.operation': 'الإجراء',
+  'groups-list.button.delete': 'حذف',
+  'groups-list.delete.confirm': 'هل أنت متأكد من هذا الإجراء؟',
+  'groups-list.delete.loading': 'جاري الحذف...',
+  'groups-list.button.active': 'تفعيل',
+  'groups-list.button.inactive': 'تعطيل',
 
   // Create Modal
   'groups-list.create.title': 'إنشاء مجموعة',

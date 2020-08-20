@@ -102,9 +102,10 @@ export default defineConfig({
                   component: './groups',
                 },
                 {
-                  name: 'managed-list',
-                  path: '/groups/managed',
-                  component: './list/table-list',
+                  name: 'edit',
+                  path: '/groups/edit/:id',
+                  component: './groups/edit',
+                  hideInMenu: true,
                 },
               ],
             },

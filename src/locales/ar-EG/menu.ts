@@ -5,7 +5,7 @@ export default {
   'menu.messages.compose': 'رسالة جديدة',
   'menu.groups': 'المجموعات',
   'menu.groups.list': 'مجموعاتي',
-  'menu.groups.managed-list': 'مجموعات أديرها',
+  'menu.groups.edit': 'تعديل المجموعة',
   'menu.developers': 'خصائص المطورين',
   'menu.dashboard': 'لوحة التحكم',
   'menu.dashboard.analysis': 'الاحصائيات',
@@ -13,4 +13,5 @@ export default {
   'menu.account': 'الحساب',
   'menu.account.logout': 'تسجيل الخروج',
   'menu.account.login': 'تسجيل الدخول',
+  'menu.settings': 'الإعدادات',
 };

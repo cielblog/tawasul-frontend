@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { FormattedMessage, getLocale, useIntl } from 'umi';
+import { FormattedMessage, getLocale, history, useIntl } from 'umi';
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Dropdown, Menu, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -8,72 +8,69 @@ import { SorterResult } from 'antd/es/table/interface';
 import MasterWrapper from '@/components/MasterWrapper';
 
 import CreateForm from './components/CreateForm';
-import UpdateForm, { FormValueType } from './components/UpdateForm';
+import { FormValueType } from './components/UpdateForm';
 import { TableListItem } from './data.d';
-import { addGroup, queryRule, removeRule, updateRule } from './service';
-
-/**
- * 更新节点
- * @param fields
- */
-const handleUpdate = async (fields: FormValueType) => {
-  const hide = message.loading('اعدادات');
-  try {
-    await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
-    });
-    hide();
-
-    message.success('تم تحديث الاعدادت بنجاح');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('فشل التحديث، يرجى المحالة مرة أخرى!');
-    return false;
-  }
-};
-
-/**
- *  删除节点
- * @param selectedRows
- */
-const handleRemove = async (selectedRows: TableListItem[]) => {
-  const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
-  try {
-    await removeRule({
-      key: selectedRows.map((row) => row.key),
-    });
-    hide();
-    message.success('删除成功，即将刷新');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('删除失败，请重试');
-    return false;
-  }
-};
+import { addGroup, queryRule, removeGroup, updateGroupStatus } from './service';
 
 const TableList: React.FC<{}> = () => {
   const { formatMessage } = useIntl();
   const [sorter, setSorter] = useState<string>('');
-  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  const [stepFormValues, setStepFormValues] = useState({});
+  const [createModalVisible, handleCreateModalVisible] = useState<boolean>(false);
+  const [submitting, setSubmitting] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
 
   const handleAdd = async (fields: FormValueType) => {
-    const hide = message.loading('正在添加');
+    const hide = message.loading(formatMessage({ id: 'groups-list.create.loading' }));
     try {
       await addGroup({ ...fields });
+      actionRef.current.reload();
       hide();
+      handleCreateModalVisible(false);
       message.success(formatMessage({ id: 'groups-list.create.done' }));
       return true;
     } catch (error) {
       hide();
       message.error('添加失败请重试！');
+      return false;
+    }
+  };
+
+  const handleRemove = async (selectedRows: TableListItem[]) => {
+    const hide = message.loading(formatMessage({ id: 'groups-list.delete.loading' }));
+    setSubmitting(true);
+    if (!selectedRows) return true;
+    try {
+      const ids: string = selectedRows.map((x) => x.id).join(',');
+      const response = await removeGroup(ids);
+      setSubmitting(false);
+      hide();
+      message.success(response.message);
+      return true;
+    } catch (error) {
+      hide();
+      message.error('删除失败，请重试');
+      return false;
+    }
+  };
+
+  const handleStatusChange = async (status: number, selectedRows: TableListItem[]) => {
+    const hide = message.loading(formatMessage({ id: 'groups-list.delete.loading' }));
+    setSubmitting(true);
+    if (!selectedRows) return true;
+    try {
+      const ids: number[] = selectedRows.map((x) => x.id);
+
+      const response = await updateGroupStatus(ids, status);
+      setSubmitting(false);
+      hide();
+      message.success(response.message);
+      actionRef.current.clearSelected();
+      return true;
+    } catch (error) {
+      hide();
+      if (error.response.status === 400) {
+        message.warn(error.data.message);
+      }
       return false;
     }
   };
@@ -92,14 +89,14 @@ const TableList: React.FC<{}> = () => {
     },
     {
       title: 'حالة المجموعة',
-      dataIndex: 'activated',
+      dataIndex: 'status',
       hideInForm: true,
       valueEnum: {
-        true: {
+        ACTIVE: {
           text: formatMessage({ id: 'groups-list.field.status.activated' }),
           status: 'success',
         },
-        false: {
+        INACTIVE: {
           text: formatMessage({ id: 'groups-list.field.status.disabled' }),
           status: 'error',
         },
@@ -119,16 +116,15 @@ const TableList: React.FC<{}> = () => {
       valueType: 'option',
       render: (_, record) => (
         <>
-          <a
+          <Button
             onClick={() => {
-              handleUpdateModalVisible(true);
-              setStepFormValues(record);
+              history.push(`/groups/edit/${record.id}`);
             }}
+            type="link"
+            size="small"
           >
-            <Button type="link" size="small">
-              <FormattedMessage id="component.edit" />
-            </Button>
-          </a>
+            <FormattedMessage id="component.edit" />
+          </Button>
         </>
       ),
     },
@@ -152,7 +148,7 @@ const TableList: React.FC<{}> = () => {
           }}
           locale={getLocale()}
           toolBarRender={(action, { selectedRows }) => [
-            <Button type="primary" onClick={() => handleModalVisible(true)}>
+            <Button type="primary" onClick={() => handleCreateModalVisible(true)}>
               <PlusOutlined /> <FormattedMessage id="group-list.create-button" />
             </Button>,
             selectedRows && selectedRows.length > 0 && (
@@ -162,13 +158,29 @@ const TableList: React.FC<{}> = () => {
                     onClick={async (e) => {
                       if (e.key === 'remove') {
                         await handleRemove(selectedRows);
-                        action.reload();
+                        await action.reload();
+                      }
+
+                      if (e.key === 'active') {
+                        await handleStatusChange(0, selectedRows);
+                        await action.reload();
+                      }
+                      if (e.key === 'inactive') {
+                        await handleStatusChange(1, selectedRows);
+                        await action.reload();
                       }
                     }}
                     selectedKeys={[]}
                   >
-                    <Menu.Item key="remove">批量删除</Menu.Item>
-                    <Menu.Item key="approval">批量审批</Menu.Item>
+                    <Menu.Item key="remove" disabled={submitting}>
+                      <FormattedMessage id="groups-list.button.delete" />
+                    </Menu.Item>
+                    <Menu.Item key="active" disabled={submitting}>
+                      <FormattedMessage id="groups-list.button.active" />
+                    </Menu.Item>
+                    <Menu.Item key="inactive" disabled={submitting}>
+                      <FormattedMessage id="groups-list.button.inactive" />
+                    </Menu.Item>
                   </Menu>
                 }
               >
@@ -181,14 +193,16 @@ const TableList: React.FC<{}> = () => {
           tableAlertRender={false}
           request={(params, sort) => {
             const newParams = { ...params };
-            const newSorter: string = Object.keys(sort).map((key) => {
-              let value: string = sort[key];
+            const newSorter: string = Object.keys(sort)
+              .map((key) => {
+                let value: string = sort[key];
 
-              if (value === 'descend') value = 'desc';
-              if (value === 'ascend') value = 'asc';
+                if (value === 'descend') value = 'desc';
+                if (value === 'ascend') value = 'asc';
 
-              return `${key},${value}`;
-            });
+                return `${key},${value}`;
+              })
+              .join();
             return queryRule({
               size: params.pageSize,
               page: params.current,
@@ -203,32 +217,12 @@ const TableList: React.FC<{}> = () => {
           rowSelection={{}}
         />
         <CreateForm
-          onCancel={() => handleModalVisible(false)}
+          onCancel={() => handleCreateModalVisible(false)}
           modalVisible={createModalVisible}
           columns={columns}
           onAdd={handleAdd}
-          onVisible={handleModalVisible}
+          onVisible={handleCreateModalVisible}
         />
-        {stepFormValues && Object.keys(stepFormValues).length ? (
-          <UpdateForm
-            onSubmit={async (value) => {
-              const success = await handleUpdate(value);
-              if (success) {
-                handleUpdateModalVisible(false);
-                setStepFormValues({});
-                if (actionRef.current) {
-                  actionRef.current.reload();
-                }
-              }
-            }}
-            onCancel={() => {
-              handleUpdateModalVisible(false);
-              setStepFormValues({});
-            }}
-            updateModalVisible={updateModalVisible}
-            values={stepFormValues}
-          />
-        ) : null}
       </PageHeaderWrapper>
     </MasterWrapper>
   );

@@ -65,7 +65,7 @@ class Basic extends Component<BasicProps, BasicState> {
     if (basicGoods.length) {
       let num = 0;
       let amount = 0;
-      basicGoods.forEach((item) => {
+      basicGoods.foEach((item) => {
         num += Number(item.num);
         amount += Number(item.amount);
       });
