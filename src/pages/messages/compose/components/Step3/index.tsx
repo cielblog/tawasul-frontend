@@ -26,9 +26,10 @@ const Step3: React.FC<Step3PRops> = (props) => {
     current_balance: 0,
     new_balance: 0,
     recipients_count: 0,
+    can_send: false,
   });
 
-  useEffect(() => {
+  const doValidate = () => {
     setLoadingDetails(true);
     validateSms(data)
       .then((response) => {
@@ -39,11 +40,18 @@ const Step3: React.FC<Step3PRops> = (props) => {
       .catch((exception) => {
         console.log(exception);
       });
+  };
+
+  useEffect(() => {
+    doValidate();
   }, []);
   if (!data) {
     return null;
   }
-  const { validateFields, getFieldsValue } = form;
+
+  console.log(result);
+  const { getFieldsValue } = form;
+
   const onPrev = () => {
     if (dispatch) {
       const values = getFieldsValue();
@@ -61,14 +69,10 @@ const Step3: React.FC<Step3PRops> = (props) => {
     }
   };
   const onValidateForm = async () => {
-    const values = await validateFields();
     if (dispatch) {
       dispatch({
-        type: 'composeMessage/submitStepForm',
-        payload: {
-          ...data,
-          ...values,
-        },
+        type: 'composeMessage/saveCurrentStep',
+        payload: 'done',
       });
     }
   };
@@ -79,12 +83,12 @@ const Step3: React.FC<Step3PRops> = (props) => {
         <Skeleton active />
       ) : (
         <Result
-          status="success"
+          status={result.can_send ? 'success' : 'warning'}
           title={formatMessage({ id: 'compose-form.step3.result-title' })}
           subTitle={
-            Object.keys(result).length
+            result.can_send
               ? formatMessage({ id: 'compose-form.step3.result-success' })
-              : ''
+              : formatMessage({ id: 'compose-form.step3.result-warning' })
           }
           extra={[
             <div className={styles.information}>
@@ -111,6 +115,7 @@ const Step3: React.FC<Step3PRops> = (props) => {
       <Divider style={{ margin: '24px 0' }} />
       <Form.Item className={styles.stepActions}>
         <Popconfirm
+          disabled={!result.can_send}
           placement="rightTop"
           title={formatMessage(
             { id: 'compose-form.step3.confirm' },
@@ -122,11 +127,16 @@ const Step3: React.FC<Step3PRops> = (props) => {
         >
           <Button
             type="primary"
-            onClick={onValidateForm}
+            danger={!result.can_send}
+            onClick={result.can_send ? onValidateForm : doValidate}
             loading={submitting || loadingDetails}
             className="pull-right"
           >
-            <FormattedMessage id="component.next" />
+            {result.can_send ? (
+              <FormattedMessage id="component.next" />
+            ) : (
+              <FormattedMessage id="components.try-again" />
+            )}
           </Button>
         </Popconfirm>
 

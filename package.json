@@ -65,6 +65,7 @@
     "bizcharts": "^3.5.9",
     "bizcharts-plugin-slider": "^2.1.1-beta.1",
     "classnames": "^2.2.6",
+    "dayjs": "^1.8.34",
     "dva": "^2.4.0",
     "froala-editor": "^3.2.0",
     "gg-editor": "^2.0.2",

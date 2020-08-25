@@ -7,6 +7,7 @@ export default {
   'groups-list.delete.loading': 'جاري الحذف...',
   'groups-list.button.active': 'تفعيل',
   'groups-list.button.inactive': 'تعطيل',
+  'group-list.button.only-assigned-group': 'عرض المجموعات المسندة فقط',
 
   // Create Modal
   'groups-list.create.title': 'إنشاء مجموعة',

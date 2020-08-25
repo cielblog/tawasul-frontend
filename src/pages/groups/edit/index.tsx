@@ -1,17 +1,24 @@
 import { InfoCircleOutlined } from '@ant-design/icons';
-import { Button, Card, Divider, Form, Input, Switch, Tooltip } from 'antd';
+import { Button, Card, Divider, Form, Input, Switch, Tooltip, message } from 'antd';
 import { connect, Dispatch, FormattedMessage, useIntl } from 'umi';
+import { RouteComponentProps } from 'react-router';
+
 import React, { FC, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import MasterWrapper from '@/components/MasterWrapper';
 import { StateType } from '@/pages/groups/edit/model';
 import { getValidationErrors } from '@/utils/utils';
 import MembersList from '@/pages/groups/edit/components/MembersList';
+
 import styles from './style.less';
 
 const FormItem = Form.Item;
 
-interface GroupEditProps {
+interface Params {
+  id: string;
+}
+
+interface GroupEditProps extends RouteComponentProps<Params> {
   submitting?: boolean;
   loading: boolean;
   dispatch: Dispatch;
@@ -21,15 +28,24 @@ interface GroupEditProps {
 
 const GroupEdit: FC<GroupEditProps> = (props) => {
   const { formatMessage } = useIntl();
-  const { submitting, loading, dispatch, current, server, match } = props;
+  const { submitting, loading, dispatch, current, server, match, history } = props;
+  const { id } = match.params;
   const [form] = Form.useForm();
+
+  /**
+   * IF ID not present, take the user back..
+   */
+  if (!id) {
+    message.error(formatMessage({ id: 'group-edit.not-found' }));
+    history.push('/groups/my');
+  }
 
   useEffect(() => {
     // Fetch
     if (dispatch) {
       dispatch({
         type: 'groupEdit/fetchCurrent',
-        payload: match.params.id,
+        payload: id,
       });
 
       form.setFieldsValue({
@@ -55,7 +71,7 @@ const GroupEdit: FC<GroupEditProps> = (props) => {
       type: 'groupEdit/save',
       payload: {
         ...values,
-        id: match.params.id,
+        id,
       },
     });
   };

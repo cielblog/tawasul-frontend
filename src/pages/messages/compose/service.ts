@@ -5,6 +5,7 @@ export interface ValidateSmsResult {
   current_balance: number;
   new_balance: number;
   recipients_count: number;
+  can_send: boolean;
 }
 export async function uploadEmailImage(data: FormData) {
   return request('/v1/filemanager/upload/email-image', {

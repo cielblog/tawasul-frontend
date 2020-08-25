@@ -36,7 +36,7 @@ const Model: ModelType = {
   state: {
     current: 'message-info',
     step: {
-      type: null,
+      type: 'sms',
       destination: null,
       recipients: [],
       message: null,

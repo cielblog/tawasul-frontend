@@ -39,12 +39,15 @@ const Step2: React.FC<Step2Props> = (props) => {
   const { formatMessage } = useIntl();
   const [form] = Form.useForm();
   const { data, dispatch, user } = props;
-  const { type } = data;
+
   const { currentUser } = user;
 
   if (!data) {
     return null;
   }
+
+  const { type } = data;
+
   const { validateFields, getFieldsValue } = form;
   const onPrev = () => {
     if (dispatch) {
@@ -74,7 +77,7 @@ const Step2: React.FC<Step2Props> = (props) => {
         },
       });
 
-      if (props.data.type === 'sms') {
+      if (props.data!.type === 'sms') {
         dispatch({
           type: 'composeMessage/saveCurrentStep',
           payload: 'report',

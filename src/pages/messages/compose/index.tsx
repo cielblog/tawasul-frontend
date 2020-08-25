@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Steps } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import MasterWrapper from '@/components/MasterWrapper';
-import { connect, useIntl, Dispatch } from 'umi';
+import { connect, Dispatch, useIntl } from 'umi';
 import { StateType } from './model';
 
 import Step1 from './components/Step1';
@@ -66,7 +66,7 @@ const ComposeMessage: React.FC<StepFormProps> = (props) => {
             <Steps current={currentStep} className={styles.steps}>
               <Step title={formatMessage({ id: 'compose-form.step1-title' })} />
               <Step title={formatMessage({ id: 'compose-form.step2-title' })} />
-              {data.type === 'sms' && (
+              {data!.type === 'sms' && (
                 <Step title={formatMessage({ id: 'compose-form.step3-title' })} />
               )}
               <Step title={formatMessage({ id: 'compose-form.step4-title' })} />

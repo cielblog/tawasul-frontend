@@ -25,11 +25,15 @@ export default {
   // Step three
   'compose-form.step3.result-title': 'أعرنا انتباهك',
   'compose-form.step3.result-success': 'بإمكانك ارسال هذه الرسالة، وهذه تقرير مختصر عن رسالتك',
+  'compose-form.step3.result-warning':
+    'لا يمكنك ارسال الرسالة، قد يكون السبب لعدم توفر رصيد بحسابك.',
   'compose-form.step3.price': 'قيمة الرسالة',
   'compose-form.step3.myBalance': 'رصيدك الحالي',
   'compose-form.step3.newBalance': 'الرصيد بعد الخصم',
   'compose-form.step3.numberRecipients': 'عدد المستلمين',
   'compose-form.step3.confirm': 'بإرسالك للرسالة فأنت توافق على {s}',
+  'compose-form.step3.paste-max-length-error':
+    'لا يمكنك لصق الرسالة، لأنها تتجاوز الحد المسموح به.',
 
   // Step four
   'compose-form.step4.sending': 'يجري ارسال رسالتك...',
@@ -40,7 +44,7 @@ export default {
   'compose-form.sms-field.length': 'عدد الأحرف: {count}',
   'compose-form.sms-field.parts': 'عدد الرسائل: {count}/{max}',
   'compose-form.sms-field.price': 'القيمة التقريبية: {price}',
-  'compose-form.sms-field.rules': 'قواعد الرسالة',
+  'compose-form.sms-field.view': 'معاينة الرسالة',
   'compose-form.email-field.modal-title': 'معاينة الرسالة',
 
   // Validation

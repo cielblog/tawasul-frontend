@@ -15,4 +15,6 @@ export default {
   'component.disabled': 'معطلة',
   'component.confirm': 'تأكيد',
   'component.reject': 'رفض',
+  'components.controls': 'التحكم',
+  'components.try-again': 'اعادة المحاولة',
 };

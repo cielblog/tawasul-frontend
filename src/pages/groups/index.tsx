@@ -1,39 +1,34 @@
 import React, { useRef, useState } from 'react';
-import { FormattedMessage, getLocale, history, useIntl } from 'umi';
-import { DownOutlined, PlusOutlined } from '@ant-design/icons';
+import { FormattedMessage, getLocale, useIntl } from 'umi';
+import { RouteComponentProps } from 'react-router';
+
+import { DownOutlined, PlusOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import { Button, Dropdown, Menu, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+// @ts-ignore
 import ProTable, { ActionType, ProColumns } from '@/components/LiveTable';
 import { SorterResult } from 'antd/es/table/interface';
 import MasterWrapper from '@/components/MasterWrapper';
+import groupTableConfig from '@/pages/groups/config';
 
 import CreateForm from './components/CreateForm';
-import { FormValueType } from './components/UpdateForm';
 import { TableListItem } from './data.d';
-import { addGroup, queryRule, removeGroup, updateGroupStatus } from './service';
+import { queryRule, removeGroup, updateGroupStatus } from './service';
 
-const TableList: React.FC<{}> = () => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const GroupsList: React.FC<RouteComponentProps> = (props) => {
   const { formatMessage } = useIntl();
-  const [sorter, setSorter] = useState<string>('');
-  const [createModalVisible, handleCreateModalVisible] = useState<boolean>(false);
-  const [submitting, setSubmitting] = useState<boolean>(false);
+
+  // Refs
   const actionRef = useRef<ActionType>();
 
-  const handleAdd = async (fields: FormValueType) => {
-    const hide = message.loading(formatMessage({ id: 'groups-list.create.loading' }));
-    try {
-      await addGroup({ ...fields });
-      actionRef.current.reload();
-      hide();
-      handleCreateModalVisible(false);
-      message.success(formatMessage({ id: 'groups-list.create.done' }));
-      return true;
-    } catch (error) {
-      hide();
-      message.error('添加失败请重试！');
-      return false;
-    }
-  };
+  // States
+  const [sorter, setSorter] = useState<string>('');
+  const [assigned, setAssigned] = useState<boolean>(false);
+  const [createModalVisible, handleCreateModalVisible] = useState<boolean>(false);
+  const [submitting, setSubmitting] = useState<boolean>(false);
+
+  // Handlers
 
   const handleRemove = async (selectedRows: TableListItem[]) => {
     const hide = message.loading(formatMessage({ id: 'groups-list.delete.loading' }));
@@ -75,80 +70,73 @@ const TableList: React.FC<{}> = () => {
     }
   };
 
-  const columns: ProColumns<TableListItem>[] = [
-    {
-      title: 'اسم المجموعة',
-      dataIndex: 'title',
-      sorter: true,
-    },
-    {
-      title: 'عدد الأعضاء',
-      dataIndex: 'number_members',
-      hideInForm: true,
-      hideInSearch: true,
-    },
-    {
-      title: 'حالة المجموعة',
-      dataIndex: 'status',
-      hideInForm: true,
-      valueEnum: {
-        ACTIVE: {
-          text: formatMessage({ id: 'groups-list.field.status.activated' }),
-          status: 'success',
-        },
-        INACTIVE: {
-          text: formatMessage({ id: 'groups-list.field.status.disabled' }),
-          status: 'error',
-        },
-      },
-    },
-    {
-      title: 'تاريخ الإضافة',
-      dataIndex: 'createdAt',
-      fieldKey: 'createdAt',
-      hideInForm: true,
-      sorter: true,
-      valueType: 'dateTime',
-    },
-    {
-      title: 'تحكم',
-      dataIndex: 'id',
-      valueType: 'option',
-      render: (_, record) => (
-        <>
-          <Button
-            onClick={() => {
-              history.push(`/groups/edit/${record.id}`);
-            }}
-            type="link"
-            size="small"
-          >
-            <FormattedMessage id="component.edit" />
-          </Button>
-        </>
-      ),
-    },
-  ];
+  const handleFilter = (_: any, _filter: any, _sorter: any) => {
+    const sorterResult = _sorter as SorterResult<TableListItem>;
+    if (sorterResult.field) {
+      setSorter(`${sorterResult.field}_${sorterResult.order}`);
+    }
+  };
+
+  const request = async (params: any, sort: any) => {
+    const newParams = { ...params };
+    const newSorter: string = Object.keys(sort)
+      .map((key) => {
+        let value: string = sort[key];
+
+        if (value === 'descend') value = 'desc';
+        if (value === 'ascend') value = 'asc';
+
+        return `${key},${value}`;
+      })
+      .join();
+
+    setSubmitting(true);
+
+    try {
+      const result = queryRule({
+        size: params.pageSize,
+        page: params.current,
+        sort: newSorter,
+        ...newParams,
+      });
+
+      await result;
+      console.log(result);
+      setSubmitting(false);
+      return Promise.resolve(result);
+    } catch (e) {
+      return new Error('error');
+    }
+  };
+
+  const columns: ProColumns<TableListItem>[] = groupTableConfig(formatMessage);
 
   return (
     <MasterWrapper>
-      <PageHeaderWrapper>
+      <PageHeaderWrapper content={<FormattedMessage id="group-list.description" />}>
         <ProTable<TableListItem>
-          headerTitle="قائمة مجموعاتي"
+          headerTitle={
+            <Button
+              type={assigned ? 'primary' : 'dashed'}
+              icon={<UnorderedListOutlined />}
+              loading={submitting}
+              disabled={submitting}
+              onClick={() => (assigned ? setAssigned(false) : setAssigned(true))}
+            >
+              <FormattedMessage id="group-list.button.only-assigned-group" />
+            </Button>
+          }
           actionRef={actionRef}
           rowKey="id"
-          onChange={(_, _filter, _sorter) => {
-            const sorterResult = _sorter as SorterResult<TableListItem>;
-            if (sorterResult.field) {
-              setSorter(`${sorterResult.field}_${sorterResult.order}`);
-            }
-          }}
-          params={{
-            sorter,
-          }}
+          onChange={handleFilter}
+          params={{ sorter, assigned }}
           locale={getLocale()}
           toolBarRender={(action, { selectedRows }) => [
-            <Button type="primary" onClick={() => handleCreateModalVisible(true)}>
+            <Button
+              type="primary"
+              onClick={() => handleCreateModalVisible(true)}
+              loading={submitting}
+            >
               <PlusOutlined /> <FormattedMessage id="group-list.create-button" />
             </Button>,
             selectedRows && selectedRows.length > 0 && (
@@ -185,33 +173,16 @@ const TableList: React.FC<{}> = () => {
                 }
               >
                 <Button>
-                  <FormattedMessage id="groups-list.button.operation" /> <DownOutlined />
+                  <FormattedMessage id="groups-list.button.operation" />
+                  <DownOutlined />
                 </Button>
               </Dropdown>
             ),
           ]}
           tableAlertRender={false}
-          request={(params, sort) => {
-            const newParams = { ...params };
-            const newSorter: string = Object.keys(sort)
-              .map((key) => {
-                let value: string = sort[key];
-
-                if (value === 'descend') value = 'desc';
-                if (value === 'ascend') value = 'asc';
-
-                return `${key},${value}`;
-              })
-              .join();
-            return queryRule({
-              size: params.pageSize,
-              page: params.current,
-              sort: newSorter,
-              ...newParams,
-            });
-          }}
+          request={request}
           pagination={{
-            defaultPageSize: 10,
+            defaultPageSize: 15,
           }}
           columns={columns}
           rowSelection={{}}
@@ -220,12 +191,12 @@ const TableList: React.FC<{}> = () => {
           onCancel={() => handleCreateModalVisible(false)}
           modalVisible={createModalVisible}
           columns={columns}
-          onAdd={handleAdd}
           onVisible={handleCreateModalVisible}
+          table={actionRef.current}
         />
       </PageHeaderWrapper>
     </MasterWrapper>
   );
 };
 
-export default TableList;
+export default GroupsList;

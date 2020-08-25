@@ -1,3 +1,25 @@
-.sms {
-  font-size: 13px;
+.speech {
+  position: relative;
+  word-break: break-word;
+  background: #f2f3f5;
+  border-radius: 0.4em;
+
+  span {
+    display: block;
+    padding: 20px;
+  }
+
+  &::after {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    width: 0;
+    height: 0;
+    margin-top: -0.312em;
+    margin-right: -0.625em;
+    border: 0 solid transparent;
+    border-bottom-width: 0.625em;
+    border-left: 0.625em solid #f2f3f5;
+    content: '';
+  }
 }
