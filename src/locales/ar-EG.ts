@@ -8,6 +8,8 @@ import table from './ar-EG/table';
 
 export default {
   appname: 'نظام تواصل',
+  company: 'جامعة الملك سعود',
+  copyright: '{symbol} {year} {company}',
   'navBar.lang': 'اللغات',
   'layout.user.link.help': 'المساعدة',
   'layout.user.link.privacy': 'سياسة الخصوصية',

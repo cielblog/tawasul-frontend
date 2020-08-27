@@ -59,18 +59,11 @@ export default defineConfig({
           Routes: ['src/pages/Authorized'],
           routes: [
             {
-              path: '/dashboard',
-              name: 'dashboard',
-              title: 'menu.dashboard',
-              icon: 'dashboard',
-              routes: [
-                {
-                  name: 'analysis',
-                  icon: 'StockOutlined',
-                  path: '/dashboard/analysis',
-                  component: './dashboard/analysis',
-                },
-              ],
+              path: '/desktop',
+              name: 'desktop',
+              title: 'menu.desktop',
+              icon: 'desktop',
+              component: './desktop/analysis',
             },
             {
               path: '/messages',
@@ -96,7 +89,7 @@ export default defineConfig({
                   path: '/messages/read/:id',
                   component: './messages/read',
                   exact: true,
-                  hideInMenu: false,
+                  hideInMenu: true,
                 },
               ],
             },
@@ -136,7 +129,7 @@ export default defineConfig({
             },
             {
               path: '/',
-              redirect: '/dashboard/analysis',
+              redirect: '/desktop',
             },
             {
               path: '/account',

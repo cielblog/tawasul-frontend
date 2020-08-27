@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { connect, ConnectProps } from 'umi';
-import { Tag, message } from 'antd';
+import { connect, injectIntl, ConnectProps, WrappedComponentProps } from 'umi';
+import { message } from 'antd';
 import groupBy from 'lodash/groupBy';
 import moment from 'moment';
 import { NoticeItem } from '@/models/global';
@@ -9,7 +9,7 @@ import { ConnectState } from '@/models/connect';
 import NoticeIcon from '../NoticeIcon';
 import styles from './index.less';
 
-export interface GlobalHeaderRightProps extends Partial<ConnectProps> {
+export interface GlobalHeaderRightProps extends Partial<ConnectProps>, WrappedComponentProps {
   notices?: NoticeItem[];
   currentUser?: CurrentUser;
   fetchingNotices?: boolean;
@@ -64,36 +64,13 @@ class GlobalHeaderRight extends Component<GlobalHeaderRightProps> {
     const newNotices = notices.map((notice) => {
       const newNotice = { ...notice };
 
-      if (newNotice.datetime) {
-        newNotice.datetime = moment(notice.datetime as string).fromNow();
-      }
-
-      if (newNotice.id) {
-        newNotice.key = newNotice.id;
-      }
-
-      if (newNotice.extra && newNotice.status) {
-        const color = {
-          todo: '',
-          processing: 'blue',
-          urgent: 'red',
-          doing: 'gold',
-        }[newNotice.status];
-        newNotice.extra = (
-          <Tag
-            color={color}
-            style={{
-              marginRight: 0,
-            }}
-          >
-            {newNotice.extra}
-          </Tag>
-        );
+      if (newNotice.created_at) {
+        newNotice.created_at = moment(notice.created_at as string).fromNow();
       }
 
       return newNotice;
     });
-    return groupBy(newNotices, 'type');
+    return groupBy(newNotices, 'channel');
   };
 
   getUnreadData = (noticeData: { [key: string]: NoticeItem[] }) => {
@@ -115,13 +92,15 @@ class GlobalHeaderRight extends Component<GlobalHeaderRightProps> {
   };
 
   render() {
-    const { currentUser, fetchingNotices, onNoticeVisibleChange } = this.props;
+    const { intl } = this.props;
+    const { formatMessage } = intl;
+    const { fetchingNotices, onNoticeVisibleChange } = this.props;
     const noticeData = this.getNoticeData();
     const unreadMsg = this.getUnreadData(noticeData);
     return (
       <NoticeIcon
         className={styles.action}
-        count={currentUser && currentUser.unreadCount}
+        count={this.props.notices?.length}
         onItemClick={(item) => {
           this.changeReadState(item as NoticeItem);
         }}
@@ -134,27 +113,27 @@ class GlobalHeaderRight extends Component<GlobalHeaderRightProps> {
         clearClose
       >
         <NoticeIcon.Tab
-          tabKey="notification"
-          count={unreadMsg.notification}
-          list={noticeData.notification}
-          title="通知"
-          emptyText="你已查看所有通知"
+          tabKey="BALANCE"
+          count={unreadMsg.BALANCE}
+          list={noticeData.BALANCE}
+          title={formatMessage({ id: 'components.notification.balance.title' })}
+          emptyText={formatMessage({ id: 'component.notification.empty' })}
           showViewMore
         />
         <NoticeIcon.Tab
-          tabKey="message"
-          count={unreadMsg.message}
-          list={noticeData.message}
-          title="消息"
-          emptyText="您已读完所有消息"
+          tabKey="MESSAGES"
+          count={unreadMsg.MESSAGES}
+          list={noticeData.MESSAGES}
+          title={formatMessage({ id: 'components.notification.messages.title' })}
+          emptyText={formatMessage({ id: 'component.notification.empty' })}
           showViewMore
         />
         <NoticeIcon.Tab
-          tabKey="event"
-          title="待办"
-          emptyText="你已完成所有待办"
-          count={unreadMsg.event}
-          list={noticeData.event}
+          tabKey="SYSTEM"
+          title={formatMessage({ id: 'components.notification.system.title' })}
+          emptyText={formatMessage({ id: 'component.notification.empty' })}
+          count={unreadMsg.SYSTEM}
+          list={noticeData.SYSTEM}
           showViewMore
         />
       </NoticeIcon>
@@ -162,10 +141,12 @@ class GlobalHeaderRight extends Component<GlobalHeaderRightProps> {
   }
 }
 
-export default connect(({ user, global, loading }: ConnectState) => ({
-  currentUser: user.currentUser,
-  collapsed: global.collapsed,
-  fetchingMoreNotices: loading.effects['global/fetchMoreNotices'],
-  fetchingNotices: loading.effects['global/fetchNotices'],
-  notices: global.notices,
-}))(GlobalHeaderRight);
+export default injectIntl(
+  connect(({ user, global, loading }: ConnectState) => ({
+    currentUser: user.currentUser,
+    collapsed: global.collapsed,
+    fetchingMoreNotices: loading.effects['global/fetchMoreNotices'],
+    fetchingNotices: loading.effects['global/fetchNotices'],
+    notices: global.notices,
+  }))(GlobalHeaderRight),
+);

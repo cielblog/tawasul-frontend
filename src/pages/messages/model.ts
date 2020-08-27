@@ -2,12 +2,12 @@ import { Effect, Reducer } from 'umi';
 import { MessageListItem } from '@/pages/messages/data';
 import { fetchMessage, fetchMessages } from '@/pages/messages/service';
 
-const defaultState: MessagesListModelState = {
+const defaultState: MessageModalState = {
   list: [],
   current: null,
 };
 
-export interface MessagesListModelState {
+export interface MessageModalState {
   list?: MessageListItem[];
   current?: MessageListItem | null;
   server?: {
@@ -18,21 +18,21 @@ export interface MessagesListModelState {
 
 export interface MessageModelType {
   namespace: string;
-  state: MessagesListModelState;
+  state: MessageModalState;
   effects: {
     fetchList: Effect;
     fetchCurrent: Effect;
   };
   reducers: {
-    saveList: Reducer<MessagesListModelState>;
-    saveCurrent: Reducer<MessagesListModelState>;
-    reset: Reducer<MessagesListModelState>;
-    saveServerStatus: Reducer<MessagesListModelState>;
+    saveList: Reducer<MessageModalState>;
+    saveCurrent: Reducer<MessageModalState>;
+    reset: Reducer<MessageModalState>;
+    saveServerStatus: Reducer<MessageModalState>;
   };
 }
 
 const Model: MessageModelType = {
-  namespace: 'messagesList',
+  namespace: 'messagesModel',
 
   state: {
     ...defaultState,

@@ -5,9 +5,9 @@ export async function query(): Promise<any> {
 }
 
 export async function queryCurrent(): Promise<any> {
-  return request('/v1/auth/account');
+  return request('/v1/user');
 }
 
-export async function queryNotices(): Promise<any> {
-  return request('/api/notices');
+export async function queryNotifications(): Promise<any> {
+  return request('/v1/notifications');
 }

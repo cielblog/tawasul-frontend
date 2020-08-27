@@ -16,7 +16,7 @@ export default (formatMessage: (...args: any) => string): any => {
       dataIndex: 'subject',
       sorter: false,
       render: (_: any, record: { subject: any }) =>
-        !record.subject || !record.subject
+        !record.subject
           ? formatMessage({ id: 'messages-list.field.subject.no-subject' })
           : record.subject,
     },

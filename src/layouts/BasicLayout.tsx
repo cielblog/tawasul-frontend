@@ -5,14 +5,14 @@
  */
 import ProLayout, {
   BasicLayoutProps as ProLayoutProps,
-  DefaultFooter,
   MenuDataItem,
   SettingDrawer,
   Settings,
 } from '@ant-design/pro-layout';
 import React, { useEffect } from 'react';
 import { connect, Dispatch, FormattedMessage, Link, useIntl } from 'umi';
-import { GithubOutlined } from '@ant-design/icons';
+import dayjs from 'dayjs';
+import { CopyrightOutlined } from '@ant-design/icons';
 import { Button, Result } from 'antd';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
@@ -66,30 +66,14 @@ const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
     return Authorized.check(item.authority, localItem, null) as MenuDataItem;
   });
 
-const defaultFooterDom = (
-  <DefaultFooter
-    copyright="2019 蚂蚁金服体验技术部出品"
-    links={[
-      {
-        key: 'Ant Design Pro',
-        title: 'Ant Design Pro',
-        href: 'https://pro.ant.design',
-        blankTarget: true,
-      },
-      {
-        key: 'github',
-        title: <GithubOutlined />,
-        href: 'https://github.com/ant-design/ant-design-pro',
-        blankTarget: true,
-      },
-      {
-        key: 'Ant Design',
-        title: 'Ant Design',
-        href: 'https://ant.design',
-        blankTarget: true,
-      },
-    ]}
-  />
+const year = dayjs().format('YYYY');
+const defaultFooterDom = (formatMessage: any) => (
+  <div className="ant-pro-global-footer">
+    {formatMessage(
+      { id: 'copyright' },
+      { company: formatMessage({ id: 'company' }), symbol: <CopyrightOutlined />, year },
+    )}
+  </div>
 );
 
 const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
@@ -212,7 +196,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
             <span>{route.breadcrumbName}</span>
           );
         }}
-        footerRender={() => defaultFooterDom}
+        footerRender={() => defaultFooterDom(formatMessage)}
         menuDataRender={menuDataRender}
         rightContentRender={() => <RightContent />}
         {...props}

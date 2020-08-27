@@ -17,4 +17,10 @@ export default {
   'component.reject': 'رفض',
   'components.controls': 'التحكم',
   'components.try-again': 'اعادة المحاولة',
+  'components.notification.balance.title': 'الرصيد',
+  'components.notification.system.title': 'النظام',
+  'components.notification.messages.title': 'الرسائل',
+  'component.notification.empty': 'لا يوجد تنبيهات',
+  'components.notification.view-more': 'المزيد',
+  'components.notification.real-all': 'حذف الكل',
 };

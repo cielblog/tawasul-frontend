@@ -55,18 +55,14 @@ const NoticeList: React.SFC<NoticeIconTabProps> = ({
             [styles.read]: item.read,
           });
           // eslint-disable-next-line no-nested-ternary
-          const leftIcon = item.avatar ? (
-            typeof item.avatar === 'string' ? (
-              <Avatar className={styles.avatar} src={item.avatar} />
-            ) : (
-              <span className={styles.iconElement}>{item.avatar}</span>
-            )
+          const leftIcon = item.channel ? (
+            <Avatar className={styles.avatar}>{item.channel.charAt(0)}</Avatar>
           ) : null;
 
           return (
             <List.Item
               className={itemCls}
-              key={item.key || i}
+              key={item.id || i}
               onClick={() => onClick && onClick(item)}
             >
               <List.Item.Meta
@@ -75,13 +71,12 @@ const NoticeList: React.SFC<NoticeIconTabProps> = ({
                 title={
                   <div className={styles.title}>
                     {item.title}
-                    <div className={styles.extra}>{item.extra}</div>
+                    <div className={styles.extra}>{item.body}</div>
                   </div>
                 }
                 description={
                   <div>
-                    <div className={styles.description}>{item.description}</div>
-                    <div className={styles.datetime}>{item.datetime}</div>
+                    <div className={styles.datetime}>{item.created_at}</div>
                   </div>
                 }
               />

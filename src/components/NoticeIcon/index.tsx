@@ -11,14 +11,13 @@ import styles from './index.less';
 const { TabPane } = Tabs;
 
 export interface NoticeIconData {
-  avatar?: string | React.ReactNode;
+  id?: number;
   title?: React.ReactNode;
-  description?: React.ReactNode;
-  datetime?: React.ReactNode;
-  extra?: React.ReactNode;
+  body?: React.ReactNode;
   style?: React.CSSProperties;
-  key?: string | number;
   read?: boolean;
+  channel: string;
+  created_at: Date;
 }
 
 export interface NoticeIconProps {
@@ -69,6 +68,7 @@ const NoticeIcon: React.FC<NoticeIconProps> & {
       panes.push(
         <TabPane tab={tabTitle} key={tabKey}>
           <NoticeList
+            {...child.props}
             clearText={clearText}
             viewMoreText={viewMoreText}
             data={list}
@@ -78,7 +78,6 @@ const NoticeIcon: React.FC<NoticeIconProps> & {
             showClear={showClear}
             showViewMore={showViewMore}
             title={title}
-            {...child.props}
           />
         </TabPane>,
       );

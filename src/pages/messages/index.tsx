@@ -55,7 +55,7 @@ const MessagesList: React.FC<MessagesListProps> = (props) => {
 
     if (dispatch) {
       const response: any = dispatch({
-        type: 'messagesList/fetchList',
+        type: 'messagesModel/fetchList',
         payload: {
           size: params.pageSize,
           page: params.current,
@@ -107,17 +107,17 @@ const MessagesList: React.FC<MessagesListProps> = (props) => {
 
 export default connect(
   ({
-    messagesList,
+    messagesModel,
     loading,
   }: {
-    messagesList: MessagesListModelState;
+    messagesModel: MessagesListModelState;
     loading: {
       effects: { [key: string]: boolean };
     };
   }) => ({
-    loading: loading.effects['messagesList/fetchList'],
-    current: messagesList.current,
-    server: messagesList.server,
-    list: messagesList.list,
+    loading: loading.effects['messagesModel/fetchList'],
+    current: messagesModel.current,
+    server: messagesModel.server,
+    list: messagesModel.list,
   }),
 )(MessagesList);

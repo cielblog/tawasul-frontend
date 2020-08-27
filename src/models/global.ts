@@ -1,13 +1,16 @@
-import { Subscription, Reducer, Effect } from 'umi';
-
+import React from 'react';
+import { Effect, Reducer, Subscription } from 'umi';
 import { NoticeIconData } from '@/components/NoticeIcon';
-import { queryNotices } from '@/services/user';
+import { queryNotifications } from '@/services/user';
 import { ConnectState } from './connect.d';
 
 export interface NoticeItem extends NoticeIconData {
-  id: string;
-  type: string;
-  status: string;
+  id: number;
+  channel: string;
+  title: string | React.ReactNode;
+  body: string;
+  read: boolean;
+  created_at: string;
 }
 
 export interface GlobalModelState {
@@ -41,10 +44,10 @@ const GlobalModel: GlobalModelType = {
 
   effects: {
     *fetchNotices(_, { call, put, select }) {
-      const data = yield call(queryNotices);
+      const data = yield call(queryNotifications);
       yield put({
         type: 'saveNotices',
-        payload: data,
+        payload: data.data,
       });
       const unreadCount: number = yield select(
         (state: ConnectState) => state.global.notices.filter((item) => !item.read).length,
@@ -118,7 +121,7 @@ const GlobalModel: GlobalModelType = {
       return {
         collapsed: false,
         ...state,
-        notices: state.notices.filter((item): boolean => item.type !== payload),
+        notices: state.notices.filter((item): boolean => item.channel !== payload),
       };
     },
   },
